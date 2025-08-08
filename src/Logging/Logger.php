@@ -33,7 +33,7 @@ class Logger implements ServiceInterface {
     public function log(string $message, array $context = [], LogFile $file = null) : void
     {
 
-       return  $this->writeLog(sprintf(
+       $this->writeLog(sprintf(
             "[%s] %s%s\n",
             date($this->timestampFormat),
             $message,

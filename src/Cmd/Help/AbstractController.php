@@ -108,7 +108,7 @@ abstract class AbstractController extends ParentController {
 		$printer = $this->printer;
 
         if (empty(static::SUBCOMMANDS)) {
-            return true;
+            return;
         }
 
 		$printer->info('See Also:');
