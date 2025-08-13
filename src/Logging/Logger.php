@@ -2,6 +2,8 @@
 // Minicli
 use Minicli\App;
 use Minicli\ServiceInterface;
+// Pauldro Minicli
+use Pauldro\Minicli\v2\Cmd\CommandCall;
 
 /**
  * Logger
@@ -121,7 +123,22 @@ class Logger implements ServiceInterface {
 	 * @param  array $parts
 	 * @return string
 	 */
-	public function createLogString($parts = []) {
+	public static function createLogString($parts = []) {
 		return implode("\t", $parts);
+	}
+
+    /**
+	 * Sanitize Command for Log Use
+	 * @return string
+	 */
+	public static function sanitizeCmdForLog(CommandCall $input, array $sensitiveParams) : string
+    {
+		$cmd = implode(' ', $input->getRawArgs());
+
+		foreach ($sensitiveParams as $param) {
+			$find = "$param=" . $input->getParam($param);
+			$cmd  = str_replace($find, "$param=***", $cmd);
+		}
+		return $cmd;
 	}
 }
