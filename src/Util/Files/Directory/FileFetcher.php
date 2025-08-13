@@ -13,7 +13,7 @@ use Pauldro\Minicli\v2\Util\Files\FileFetcher as Fetcher;
 class FileFetcher {
     protected string $dir;
     protected $fetcher;
-    protected string $errorMsg;
+    public string $errorMsg;
 
     public function __construct(string $dir) {
         if (is_dir($dir) === false) {

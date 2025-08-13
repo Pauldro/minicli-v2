@@ -11,7 +11,7 @@ use Pauldro\Minicli\v2\Util\Files\JsonFetcher as Fetcher;
 class JsonFetcher extends FileFetcher {
     protected string $dir;
     protected $fetcher;
-    protected string $errorMsg;
+    public string $errorMsg;
 
 	public function __construct(string $dir) {
 		parent::__construct($dir);
