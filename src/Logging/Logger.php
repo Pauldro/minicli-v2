@@ -17,7 +17,7 @@ class Logger implements ServiceInterface {
     private LogFileType $logFileType;
     private string $timestampFormat;
 
-    public function load(App $app): void
+    public function load(App $app) : void
     {
         $config = $app->config;
 
@@ -108,7 +108,7 @@ class Logger implements ServiceInterface {
      * @param  LogFile $file
      * @return string
      */
-    private function getLogFilePath(LogFile $file): string
+    private function getLogFilePath(LogFile $file) : string
     {
         $filename = $file->value;
 
@@ -123,7 +123,8 @@ class Logger implements ServiceInterface {
 	 * @param  array $parts
 	 * @return string
 	 */
-	public static function createLogString($parts = []) {
+	public static function createLogString($parts = []) : string
+    {
 		return implode("\t", $parts);
 	}
 
