@@ -5,10 +5,12 @@ use Pauldro\Minicli\v2\Util\Files\JsonFetcher as Fetcher;
 /**
  * JsonFetcher
  * Wrapper for fetching JSON files from a single directory
+ * 
+ * @property Fetcher $fetcher
  */
 class JsonFetcher extends FileFetcher {
     protected string $dir;
-    protected Fetcher $fetcher;
+    protected $fetcher;
     protected string $errorMsg;
 
 	public function __construct(string $dir) {
