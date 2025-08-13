@@ -1,10 +1,11 @@
 <?php namespace Pauldro\Minicli\v2\App;
 // Base PHP
-// use ReflectionException;
+use ReflectionException;
 use Throwable;
 // Minicli
 use Minicli\App as MinicliApp;
 use Minicli\ControllerInterface;
+use Minicli\Exception\BindingResolutionException;
 use Minicli\Exception\CommandNotFoundException;
 use Minicli\Exception\MissingParametersException;
 use Minicli\Output\Helper\ThemeHelper;
@@ -29,6 +30,41 @@ class App extends MinicliApp {
     {
         parent::loadDefaultServices();
         $this->addService('log', new Logger());
+    }
+
+    /**
+     * @param array<string, mixed> $config
+     * @param string $signature
+     * @throws BindingResolutionException|ReflectionException
+     */
+    public function boot(array $config, string $signature) : void
+    {
+        parent::boot($config, $signature);
+        if ($this->config->has('php_ini') === false) {
+            return;
+        }
+        $this->parseSetInis();
+    }
+
+    /**
+     * Parse, Set Inis
+     * @return void
+     */
+    private function parseSetInis() {
+        if ($this->config->has('php_ini') === false) {
+            return;
+        }
+        $conf = $this->config->php_ini;
+        $dir = rtrim($conf['dir'], '/') . '/';
+        $files = array_key_exists('files', $conf) ? $conf['files'] : [];
+
+        foreach ($files as $file) {
+            $settings = parse_ini_file($dir.$file);
+
+            foreach ($settings as $option => $value) {
+                ini_set($option, $value);
+            }
+        }
     }
 
 /* =============================================================
