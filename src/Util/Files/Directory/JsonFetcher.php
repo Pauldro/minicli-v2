@@ -1,6 +1,6 @@
 <?php namespace Pauldro\Minicli\v2\Util\Files\Directory;
 // Pauldro Minicli
-use Pauldro\Minicli\v2\Util\Files\FileFetcher as Fetcher;
+use Pauldro\Minicli\v2\Util\Files\JsonFetcher as Fetcher;
 
 /**
  * JsonFetcher
@@ -10,6 +10,11 @@ class JsonFetcher extends FileFetcher {
     protected string $dir;
     protected Fetcher $fetcher;
     protected string $errorMsg;
+
+	public function __construct(string $dir) {
+		parent::__construct($dir);
+		$this->fetcher = Fetcher::instance();
+	}
 
     /**
 	 * Return Filepath

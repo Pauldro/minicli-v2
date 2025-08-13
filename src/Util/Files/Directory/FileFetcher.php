@@ -19,7 +19,7 @@ class FileFetcher {
 			throw new Exception("Directory not found: '$dir'");
 		}
 		$this->dir = $dir;
-        $this->fetcher = new Fetcher;
+        $this->fetcher = Fetcher::instance();
     }
 
     /**
