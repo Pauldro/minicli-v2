@@ -7,9 +7,9 @@ use Minicli\App as MinicliApp;
 use Minicli\ControllerInterface;
 use Minicli\Exception\CommandNotFoundException;
 use Minicli\Exception\MissingParametersException;
-use Minicli\Output\OutputHandler as MinicliOutputHelper;
 use Minicli\Output\Helper\ThemeHelper;
 // Pauldro Minicli
+use Pauldro\Minicli\v2\Cmd\AbstractController;
 use Pauldro\Minicli\v2\Cmd\CommandCall;
 use Pauldro\Minicli\v2\Output\OutputHandler;
 use Pauldro\Minicli\v2\Logging\Logger;
@@ -17,7 +17,7 @@ use Pauldro\Minicli\v2\Logging\Logger;
 
 /**
  * @property Logger        $log
- * @property OutputHandler $printer
+ * @property OutputHandler $cliprinter
  */
 class App extends MinicliApp {
     private const DEFAULT_SIGNATURE = './minicli help';
@@ -81,10 +81,14 @@ class App extends MinicliApp {
                 $controller->run($input);
                 $controller->teardown();
                 return;
-            } catch (MissingParametersException $exception) {
-                echo "Params missing";
-                $this->logger->error($exception->getMessage());
-                $this->error($exception->getMessage());
+            } catch (MissingParametersException $e) {
+                $cmd = $this->log::sanitizeCmdForLog($input, $controller::SENSITIVE_PARAMS);
+                $this->logger->error($e->getMessage(), [$cmd]);
+                
+                if ($controller instanceof AbstractController) {
+                    $this->log->error($this->log::createLogString([$cmd, '->', $e->getMessage()]));
+                }
+                $this->error($e->getMessage());
                 return;
             }
         }
