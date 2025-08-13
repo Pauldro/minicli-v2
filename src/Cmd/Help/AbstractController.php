@@ -30,6 +30,16 @@ abstract class AbstractController extends ParentController {
 	}
 
 	/**
+     * The list of parameters required by the command.
+     *
+     * @return array<int, string>
+     */
+    public function required() : array
+    {
+        return [];
+    }
+
+	/**
 	 * Display Command
 	 * @return void
 	 */
