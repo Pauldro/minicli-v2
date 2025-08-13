@@ -1,10 +1,11 @@
 <?php namespace Pauldro\Minicli\v2\Cmd;
 // Minicli
-use Minicli\App;
+use Minicli\App as MinicliApp;
 use Minicli\Command\CommandCall as MinicliCommandCall;
 use Minicli\Command\CommandController;
 use Minicli\Exception\MissingParametersException;
 // Pauldro Minicli
+use Pauldro\Minicli\v2\App\App;
 use Pauldro\Minicli\v2\Logging\Logger;
 use Pauldro\Minicli\v2\Output\OutputHandler as Printer;
 
@@ -22,7 +23,7 @@ abstract class AbstractController extends CommandController {
 	const OPTIONS_DEFINITIONS = [];
 	const OPTIONS_DEFINITIONS_OVERRIDE = [];
 	const REQUIRED_PARAMS = [];
-	const SENSITIVE_PARAM_VALUES = [];
+	const SENSITIVE_PARAMS = [];
 
 	protected Printer $printer;
 	protected Logger $log;
@@ -33,17 +34,27 @@ abstract class AbstractController extends CommandController {
 	 /**
 	 * Called before `run`
 	 *
-	 * @param App $app
-	 * @param CommandCall $input
+	 * @param  App $app
+	 * @param  CommandCall $input
 	 * @return void
 	 * @throws MissingParametersException
 	 */
-	public function boot(App $app, MinicliCommandCall $input) : void
+	public function boot(MinicliApp $app, MinicliCommandCall $input) : void
 	{
 		parent::boot($app, $input);
 		$this->log = $app->log;
 		$this->printer = $app->cliprinter;
 	}
+
+	/**
+     * The list of parameters required by the command.
+     *
+     * @return array<int, string>
+     */
+    public function required() : array
+    {
+        return static::REQUIRED_PARAMS;
+    }
 
 	/**
 	 * Initialize App
@@ -90,30 +101,16 @@ abstract class AbstractController extends CommandController {
 	Logging Functions
 ============================================================= */
 	/**
-	 * Sanitize Command for Log Use
-	 * @return string
-	 */
-	protected function sanitizeCmdForLog() : string
-    {
-		$cmd = implode(' ', $this->input->getRawArgs());
-
-		foreach (static::SENSITIVE_PARAM_VALUES as $param) {
-			$find = "$param=" . $this->getParam($param);
-			$cmd = str_replace($find, "$param=***", $cmd);
-		}
-		return $cmd;
-	}
-
-	/**
 	 * Log Command sent to App
+	 * NOTE: Keep public so App can call it
 	 * @return bool
 	 */
-	protected function logCommand() : bool
+	public function logCommand() : bool
     {
 		if (array_key_exists('LOG.COMMANDS', $_ENV) === false || $_ENV['LOG.COMMANDS'] == 'false') {
 			return true;
 		}
-		$cmd  = $this->sanitizeCmdForLog();
+		$cmd  = Logger::sanitizeCmdForLog($this->input, static::SENSITIVE_PARAMS);
 		$this->log->info($cmd);
 		return true;
 	}
@@ -127,8 +124,8 @@ abstract class AbstractController extends CommandController {
 		if (array_key_exists('LOG.ERRORS', $_ENV) === false || $_ENV['LOG.ERRORS'] == 'false') {
 			return true;
 		}
-		$cmd  = $this->sanitizeCmdForLog();
-		$this->log->error($this->log->createLogString([$cmd, $msg]));
+		$cmd  = Logger::sanitizeCmdForLog($this->input, static::SENSITIVE_PARAMS);
+		$this->log->error(Logger::createLogString([$cmd, ' -> ', $msg]));
 		return true;
 	}
 
