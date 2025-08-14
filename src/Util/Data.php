@@ -155,17 +155,17 @@ class Data implements \IteratorAggregate, \ArrayAccess {
 	 * Provides direct reference access to set values in the $data array
 	 * @param  string $key
 	 * @param  mixed $value
-	 * @return $this
 	 */
-	public function __set($key, $value) : static 
+	public function __set($key, $value) : void
 	{
 		$method = "set".ucfirst($key);
 
 		if (method_exists($this, $method)) {
 			$this->$method($value);
-			return $this;
+			return;
 		}
-		return $this->set($key, $value);
+		$this->set($key, $value);
+		return;
 	}
 
 	/**
