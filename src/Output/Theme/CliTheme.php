@@ -6,8 +6,7 @@ namespace Pauldro\Minicli\v2\Output\Theme;
 
 use Minicli\Output\CLIColors;
 
-class CliTheme extends DefaultTheme
-{
+class CliTheme extends DefaultTheme {
     /**
      * get the colors
      *
