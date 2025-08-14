@@ -2,7 +2,7 @@
 // Minicli
 use Minicli\Output\ThemeStyle;
 
-final class ThemeConfig
+class ThemeConfig
 {
     public function __construct(
         public ThemeStyle $default,

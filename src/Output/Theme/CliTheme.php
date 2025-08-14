@@ -6,12 +6,29 @@ namespace Pauldro\Minicli\v2\Output\Theme;
 // Minicli
 use Minicli\Output\CLIColors;
 use Minicli\Output\Theme\DefaultTheme;
+use Minicli\Output\ThemeStyle;
+// Pauldro Minicli
+use Pauldro\Minicli\v2\Output\ThemeConfig;
 
 /**
  * Provides Colors for Theme
- * NOTE: Must use ThemeConfig in order to work
  */
 class CliTheme extends DefaultTheme {
+    /**
+     * DefaultTheme constructor.
+     */
+    public function __construct()
+    {
+        $styles = array_merge($this->getDefaultColors(), $this->getThemeColors());
+
+        $formatted = [];
+        foreach ($styles as $name => $style) {
+            $formatted[$name] = ThemeStyle::make(...$style);
+        }
+
+        $this->config = ThemeConfig::make(...$formatted);
+    }
+
     /**
      * get the colors
      *
