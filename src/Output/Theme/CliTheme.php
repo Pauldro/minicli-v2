@@ -7,6 +7,10 @@ namespace Pauldro\Minicli\v2\Output\Theme;
 use Minicli\Output\CLIColors;
 use Minicli\Output\Theme\DefaultTheme;
 
+/**
+ * Provides Colors for Theme
+ * NOTE: Must use ThemeConfig in order to work
+ */
 class CliTheme extends DefaultTheme {
     /**
      * get the colors
@@ -24,6 +28,7 @@ class CliTheme extends DefaultTheme {
             'success_alt' => [CLIColors::$FG_WHITE, CLIColors::$BG_GREEN],
             'info'        => [CLIColors::$FG_CYAN],
             'info_alt'    => [CLIColors::$FG_WHITE, CLIColors::$BG_CYAN],
+            'info_header' => [CLIColors::$FG_BLUE],
             'bold'        => [CliColors::$BOLD],
             'dim'         => [CliColors::$DIM],
             'italic'      => [CliColors::$ITALIC],
