@@ -24,8 +24,7 @@ abstract class AbstractHelpMenuController extends AbstractController  {
 	protected function display() : void
     {
 		$printer = $this->printer;
-        $printer = $this->getApp()->getPrinter();
-		$printer->info('Available Commands:');
+		$printer->line($printer->style('Available Commands:', 'info_header'));
 		$this->displayCommands();
 		$printer->newline();
 		$printer->newline();
@@ -98,12 +97,12 @@ abstract class AbstractHelpMenuController extends AbstractController  {
 
 		if ($subcommand == 'default') {
 			$line = sprintf('%s%s', $printer->style($this->getCommandToLength($command, $cmdLength), 'info'), $handler::DESCRIPTION);
-			$printer->line($line, false);
+			$printer->out($line, false);
 			return;
 		}
 		$cmd = $printer->spaces(2) . $subcommand;
 		$line = sprintf('%s%s', $printer->style($this->getCommandToLength($cmd, $cmdLength), 'info'), $handler::DESCRIPTION);
-		$printer->line($line, false);
+		$printer->out($line, false);
 		return;
 	}
 
