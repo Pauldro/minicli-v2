@@ -8,11 +8,11 @@ use Minicli\ControllerInterface;
 use Minicli\Exception\BindingResolutionException;
 use Minicli\Exception\CommandNotFoundException;
 use Minicli\Exception\MissingParametersException;
-use Minicli\Output\Helper\ThemeHelper;
 // Pauldro Minicli
 use Pauldro\Minicli\v2\Cmd\AbstractController;
 use Pauldro\Minicli\v2\Cmd\CommandCall;
 use Pauldro\Minicli\v2\Output\OutputHandler;
+use Pauldro\Minicli\v2\Output\Helper\ThemeHelper;
 use Pauldro\Minicli\v2\Logging\Logger;
 
 
