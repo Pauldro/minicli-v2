@@ -26,23 +26,27 @@ class Logger implements ServiceInterface {
         $this->timestampFormat = $config->logging['timestamp_format'] ?? self::DEFAULT_TIMESTAMP_FORMAT;
     }
 
+/* =============================================================
+	LogFilepath Functions
+============================================================= */
     /**
-     * @param  string $message
-     * @param  array<mixed> $context
-     * @param  LogFile|null $file
-     * @return void
+     * Return Path to Log File
+     * @param  LogFile $file
+     * @return string
      */
-    public function log(string $message, array $context = [], LogFile $file = null) : void
+    private function getLogFilePath(LogFile $file) : string
     {
+        $filename = $file->value;
 
-       $this->writeLog(sprintf(
-            "[%s] %s%s\n",
-            date($this->timestampFormat),
-            $message,
-            [] === $context ? '' : ' - '.json_encode($context)
-        ), $file);
+        return match ($this->logFileType) {
+            LogFileType::DAILY => sprintf("{$this->logsPath}/$filename-%s.log", date('Y-m-d')),
+            default => "{$this->logsPath}/$filename.log",
+        };
     }
 
+/* =============================================================
+	Logging Functions
+============================================================= */
     /**
      * @param  string $message
      * @param  array<mixed> $context
@@ -84,12 +88,29 @@ class Logger implements ServiceInterface {
     }
 
     /**
+     * @param  string $message
+     * @param  array<mixed> $context
+     * @param  LogFile|null $file
+     * @return void
+     */
+    public function log(string $message, array $context = [], LogFile $file = null) : void
+    {
+
+       $this->addToLog(sprintf(
+            "[%s] %s%s\n",
+            date($this->timestampFormat),
+            $message,
+            [] === $context ? '' : ' - '.json_encode($context)
+        ), $file);
+    }
+
+    /**
      * Add Message to Log
      * @param  string $message
      * @param  LogFile $file
      * @return void
      */
-    private function writeLog(string $message, LogFile $file) : void
+    private function addToLog(string $message, LogFile $file) : void
     {
         if (is_dir($this->logsPath) === false) {
             mkdir($this->logsPath, 0775, true);
@@ -104,20 +125,101 @@ class Logger implements ServiceInterface {
     }
 
     /**
-     * Return Path to Log File
+     * Clear Log
+     * @param  LogFile $file
+     * @return void
+     */
+    public function clearLog(LogFile $file) : void
+    {
+        $logFile = $this->getLogFilePath($file);
+
+        if (file_exists($logFile) === false) {
+            return;
+        }
+        file_put_contents($logFile, '');
+    }
+
+/* =============================================================
+	Log Reading Functions
+============================================================= */
+    /**
+     * Return the Last Line of a LogFile
      * @param  LogFile $file
      * @return string
      */
-    private function getLogFilePath(LogFile $file) : string
+    public function getLastLogLine(LogFile $file) : string
     {
-        $filename = $file->value;
+        $logFile = $this->getLogFilePath($file);
 
-        return match ($this->logFileType) {
-            LogFileType::DAILY => sprintf("{$this->logsPath}/$filename-%s.log", date('Y-m-d')),
-            default => "{$this->logsPath}/$filename.log",
-        };
+        if (file_exists($logFile) === false) {
+            return '';
+        }
+        return $this->tailLog($logFile);
     }
 
+    /**
+     * Find the Last Line of a file
+     * @param  string  $filepath
+     * @param  bool    $adaptive
+     * @return string
+     */
+    private function tailLog(string $filepath, $adaptive = true) : string {
+		$lines = 1;
+
+		// Open file
+		$f = @fopen($filepath, "rb");
+		if ($f === false) return '';
+
+		// Sets buffer size, according to the number of lines to retrieve.
+		// This gives a performance boost when reading a few lines from the file.
+		if (!$adaptive) $buffer = 4096;
+		else $buffer = ($lines < 2 ? 64 : ($lines < 10 ? 512 : 4096));
+
+		// Jump to last character
+		fseek($f, -1, SEEK_END);
+
+		// Read it and adjust line number if necessary
+		// (Otherwise the result would be wrong if file doesn't end with a blank line)
+		if (fread($f, 1) != "\n") $lines -= 1;
+		
+		// Start reading
+		$output = '';
+		$chunk = '';
+
+		// While we would like more
+		while (ftell($f) > 0 && $lines >= 0) {
+
+			// Figure out how far back we should jump
+			$seek = min(ftell($f), $buffer);
+
+			// Do the jump (backwards, relative to where we are)
+			fseek($f, -$seek, SEEK_CUR);
+
+			// Read a chunk and prepend it to our output
+			$output = ($chunk = fread($f, $seek)) . $output;
+
+			// Jump back to where we started reading
+			fseek($f, -mb_strlen($chunk, '8bit'), SEEK_CUR);
+
+			// Decrease our line counter
+			$lines -= substr_count($chunk, "\n");
+		}
+
+		// While we have too many lines
+		// (Because of buffer size we might have read too many)
+		while ($lines++ < 0) {
+			// Find first newline and remove all text before that
+			$output = substr($output, strpos($output, "\n") + 1);
+		}
+
+		// Close file and return
+		fclose($f);
+		return trim($output);
+	}
+
+/* =============================================================
+	Log String Functions
+============================================================= */
     /**
 	 * Return array formatted as string for Log delimited by \t
 	 * @param  array $parts
