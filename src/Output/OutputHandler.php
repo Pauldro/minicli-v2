@@ -8,22 +8,35 @@ use Minicli\Output\OutputHandler as MinicliOutputHandler;
  */
 class OutputHandler extends MinicliOutputHandler {
     /**
-	 * Print Spaces
+	 * Return spaces
 	 * @param  int   $spaces
 	 * @return string
 	 */
-	public function spaces($spaces = 0) {
+	public function spaces($spaces = 0) : string
+	{
 		return str_pad('', $spaces , ' ');
 	}
 
 	/**
 	 * Displays content using the "default" style
-	 * @param string $content
-	 * @param bool $alt Whether or not to use the inverted style ("alt")
+	 * @param  string $content
+	 * @param  bool $alt Whether or not to use the inverted style ("alt")
 	 * @return void
 	 */
-	public function line($content, $alt = false) {
+	public function line($content, $alt = false) : void
+	{
 		$this->out($content, $alt ? "alt" : "default");
 		$this->newline();
+	}
+
+	/**
+	 * Style Content
+	 * @param string $content
+	 * @param string $style
+	 * @return string
+	 */
+	public function style($content, $style) : string
+	{
+		return $this->printerAdapter->out($this->filterOutput($content, $style));
 	}
 }
