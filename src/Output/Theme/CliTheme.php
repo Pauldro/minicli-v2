@@ -3,8 +3,9 @@
 declare(strict_types=1);
 
 namespace Pauldro\Minicli\v2\Output\Theme;
-
+// Minicli
 use Minicli\Output\CLIColors;
+use Minicli\Output\Theme\DefaultTheme;
 
 class CliTheme extends DefaultTheme {
     /**
