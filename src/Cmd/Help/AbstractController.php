@@ -64,9 +64,10 @@ abstract class AbstractController extends ParentController {
 	protected function displayUsage() : void
     {
 		$printer = $this->printer;
-		$printer->info('Usage:');
+		$printer->line($printer->style('Usage:', 'info_header'));
 		$script = $this->app->getSignature();
 		$printer->line(sprintf('%s%s%s', $printer->style($script, 'italic'), $printer->spaces(1), $printer->style(static::COMMAND, 'info') . ' [options]'));
+		$printer->newline();
 		return;
 	}
 
@@ -78,7 +79,7 @@ abstract class AbstractController extends ParentController {
     {
 		$printer = $this->printer;
 		$optLength = $this->getLongestOptExampleLength() + 4;
-		$printer->info('Options:');
+		$printer->line($printer->style('Options:', 'info_header'));
 
 		foreach (static::OPTIONS as $option => $example) {
 			$printer->line(sprintf('%s%s%s', $printer->spaces(2), $this->getOptToLength($example, $optLength), $this->getOptDefinition($option)));
@@ -98,7 +99,7 @@ abstract class AbstractController extends ParentController {
 
 		$printer = $this->printer;
 		$optLength = $this->getLongestOptExampleLength() + 4;
-		$printer->info('Required:');
+		$printer->line($printer->style('Required:', 'info_header'));
 
 		foreach (static::REQUIRED_PARAMS as $option) {
 			if (array_key_exists($option, static::OPTIONS) === false) {
@@ -113,22 +114,14 @@ abstract class AbstractController extends ParentController {
 	}
 
 	/**
-	 * Display Subcommands
+	 * Display Command Help
 	 * @return void
 	 */
-	protected function displaySubcommands() : void
+	protected function displayHelp() : void
     {
 		$printer = $this->printer;
-
-        if (empty(static::SUBCOMMANDS)) {
-            return;
-        }
-
-		$printer->info('See Also:');
-
-		foreach (static::SUBCOMMANDS as $cmd) {
-			$printer->line(sprintf('%s%s%s%s%s', $printer->spaces(2), 'help ', static::COMMAND, ' ', $cmd));
-		}
+		$printer->line($printer->style('Help:', 'info_header'));
+		$printer->line(sprintf('%s%s', $printer->spaces(2), static::DESCRIPTION));
 		return;
 	}
 
@@ -141,7 +134,7 @@ abstract class AbstractController extends ParentController {
 		$printer = $this->printer;
 
 		if (empty(static::NOTES) === false) {
-			$printer->info('Notes:');
+			$printer->line($printer->style('Notes:', 'info_header'));
 		}
 
 		foreach (static::NOTES as $line) {
@@ -150,15 +143,24 @@ abstract class AbstractController extends ParentController {
 		return;
 	}
 
+
 	/**
-	 * Display Command Help
+	 * Display Subcommands
 	 * @return void
 	 */
-	protected function displayHelp() : void
+	protected function displaySubcommands() : void
     {
 		$printer = $this->printer;
-		$printer->info('Help:');
-		$printer->line(sprintf('%s%s', $printer->spaces(2), static::DESCRIPTION));
+
+        if (empty(static::SUBCOMMANDS)) {
+            return;
+        }
+		$printer->line($printer->style('See Also:', 'info_header'));
+		
+
+		foreach (static::SUBCOMMANDS as $cmd) {
+			$printer->line(sprintf('%s%s%s%s%s', $printer->spaces(2), 'help ', static::COMMAND, ' ', $cmd));
+		}
 		return;
 	}
 
