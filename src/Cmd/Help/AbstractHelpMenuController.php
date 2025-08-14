@@ -97,12 +97,12 @@ abstract class AbstractHelpMenuController extends AbstractController  {
         $printer->newline();
 
 		if ($subcommand == 'default') {
-			$line = sprintf('%s%s', $printer->out($this->getCommandToLength($command, $cmdLength), 'info'), $handler::DESCRIPTION);
+			$line = sprintf('%s%s', $printer->style($this->getCommandToLength($command, $cmdLength), 'info'), $handler::DESCRIPTION);
 			$printer->line($line, false);
 			return;
 		}
 		$cmd = $printer->spaces(2) . $subcommand;
-		$line = sprintf('%s%s', $printer->out($this->getCommandToLength($cmd, $cmdLength), 'info'), $handler::DESCRIPTION);
+		$line = sprintf('%s%s', $printer->style($this->getCommandToLength($cmd, $cmdLength), 'info'), $handler::DESCRIPTION);
 		$printer->line($line, false);
 		return;
 	}

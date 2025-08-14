@@ -65,7 +65,8 @@ abstract class AbstractController extends ParentController {
     {
 		$printer = $this->printer;
 		$printer->info('Usage:');
-		$printer->line(sprintf('%s%s%s', $this->app->getSignature(), $printer->spaces(1), static::COMMAND . ' [options]'));
+		$script = $this->app->getSignature();
+		$printer->line(sprintf('%s%s%s', $printer->style($script, 'italic'), $printer->spaces(1), $printer->style(static::COMMAND, 'info') . ' [options]'));
 		return;
 	}
 
@@ -100,11 +101,13 @@ abstract class AbstractController extends ParentController {
 		$printer->info('Required:');
 
 		foreach (static::REQUIRED_PARAMS as $option) {
-			if (array_key_exists($option, static::REQUIRED_PARAMS) === false) {
+			if (array_key_exists($option, static::OPTIONS) === false) {
 				continue;
 			}
-			$example = static::OPTIONS[$option];
-			$printer->line(sprintf('%s%s%s', $printer->spaces(2), $this->getOptToLength($example, $optLength), $this->getOptDefinition($option)));
+			
+			$example = $this->getOptToLength($option, $optLength);
+			$description = $this->getOptDefinition($option);
+			$printer->line(sprintf('%s%s%s', $printer->spaces(2), $example, $description));
 		}
 		return;
 	}
