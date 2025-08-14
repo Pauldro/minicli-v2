@@ -1,4 +1,6 @@
 <?php namespace Pauldro\Minicli\v2\Util;
+//
+use ArrayObject;
 
 /**
  * Data
@@ -20,7 +22,8 @@ class Data implements \IteratorAggregate, \ArrayAccess {
 	 * override this method to include that data as well.
 	 * @return array Returned array is associative and indexed by property name.
 	 */
-	public function getArray() {
+	public function getArray() : array
+	{
 		return $this->data;
 	}
 
@@ -28,7 +31,8 @@ class Data implements \IteratorAggregate, \ArrayAccess {
 	 * Return this data as an array
 	 * @return array
 	 */
-	public function getJsonArray() {
+	public function getJsonArray() : array
+	{
 		return $this->data;
 	}
 
@@ -45,7 +49,8 @@ class Data implements \IteratorAggregate, \ArrayAccess {
 	 * @return mixed|null          Returns value of requested property, or null if the property was not found.
 	 *
 	 */
-	public function get($key) {
+	public function get($key) : mixed
+	{
 		$method = 'get' . ucfirst($key);
 
 		if (method_exists($this, $method)) {
@@ -69,7 +74,8 @@ class Data implements \IteratorAggregate, \ArrayAccess {
 	 * @param  string $key
 	 * @return mixed|null
 	 */
-	public function __get($key) {
+	public function __get($key) : mixed
+	{
 		return $this->get($key);
 	}
 
@@ -78,7 +84,8 @@ class Data implements \IteratorAggregate, \ArrayAccess {
 	 * @param string $key
 	 * @return mixed
 	 */
-	public function __invoke($key) {
+	public function __invoke($key) : mixed
+	{
 		return $this->get($key);
 	}
 
@@ -87,7 +94,8 @@ class Data implements \IteratorAggregate, \ArrayAccess {
 	 * @param  int|string $key  Key of the item to check for existence.
 	 * @return bool             True if the item exists, false if not.
 	 */
-	public function has($key) {
+	public function has($key) : bool
+	{
 		return $this->__isset($key);
 	}
 
@@ -108,12 +116,12 @@ class Data implements \IteratorAggregate, \ArrayAccess {
 	 * $item['foo'] = 'bar';
 	 * ~~~~~
 	 *
-	 * @param string $key Name of property you want to set
-	 * @param mixed $value Value of property
+	 * @param  string $key Name of property you want to set
+	 * @param  mixed $value Value of property
 	 * @return $this
-	 *
 	 */
-	public function set($key, $value) {
+	public function set($key, $value) : static
+	{
 		if ($key === 'data') {
 			if (is_array($value) === false) {
 				$value = (array) $value;
@@ -123,7 +131,7 @@ class Data implements \IteratorAggregate, \ArrayAccess {
 
 		if (property_exists($this, $key)) {
 			$this->$key = $value;
-			return $this->key;
+			return $this;
 		}
 
 		$this->data[$key] = $value;
@@ -135,7 +143,8 @@ class Data implements \IteratorAggregate, \ArrayAccess {
 	 * @param  array $data Associative array of where the keys are property names, and values are… values.
 	 * @return $this
 	 */
-	public function setArray(array $data) {
+	public function setArray(array $data) : static 
+	{
 		foreach ($data as $key => $value) {
 			$this->__set($key, $value);
 		}
@@ -148,11 +157,13 @@ class Data implements \IteratorAggregate, \ArrayAccess {
 	 * @param  mixed $value
 	 * @return $this
 	 */
-	public function __set($key, $value) {
+	public function __set($key, $value) : static 
+	{
 		$method = "set".ucfirst($key);
 
 		if (method_exists($this, $method)) {
-			return $this->$method($value);
+			$this->$method($value);
+			return $this;
 		}
 		return $this->set($key, $value);
 	}
@@ -162,7 +173,8 @@ class Data implements \IteratorAggregate, \ArrayAccess {
 	 * @param string $key
 	 * @return bool
 	 */
-	public function __isset($key) {
+	public function __isset($key) : bool 
+	{
 		return isset($this->data[$key]);
 	}
 
@@ -173,8 +185,10 @@ class Data implements \IteratorAggregate, \ArrayAccess {
 	 * Ensures that unset() works for this classes data.
 	 * @param string $key
 	 */
-	public function __unset($key) {
+	public function __unset($key) : void
+	{
 		$this->remove($key);
+		return;
 	}
 
 	/**
@@ -185,7 +199,8 @@ class Data implements \IteratorAggregate, \ArrayAccess {
 	 * @param string $key Name of property you want to remove
 	 * @return $this
 	 */
-	public function remove($key) {
+	public function remove($key) : static
+	{
 		unset($this->data[$key]);
 		return $this;
 	}
@@ -195,10 +210,10 @@ class Data implements \IteratorAggregate, \ArrayAccess {
 ============================================================= */
 	/**
 	 * Enables the object data properties to be iterable as an array
-	 * @return \ArrayObject
+	 * @return ArrayObject
 	 */
-	public function getIterator() {
-		return new \ArrayObject($this->data);
+	public function getIterator() : ArrayObject {
+		return new ArrayObject($this->data);
 	}
 
 /* =============================================================
@@ -209,7 +224,8 @@ class Data implements \IteratorAggregate, \ArrayAccess {
 	 * @param int|string              $key    Key of item to set.
 	 * @param int|string|array|object $value  Value of item.
 	 */
-	public function offsetSet($key, $value) {
+	public function offsetSet($key, $value) : void 
+	{
 		$this->set($key, $value);
 	}
 
@@ -217,7 +233,8 @@ class Data implements \IteratorAggregate, \ArrayAccess {
 	 * @param  int|string               $key  Key of item to retrieve.
 	 * @return int|string|array|object        Value of item requested, or false if it doesn't exist.
 	 */
-	public function offsetGet($key) {
+	public function offsetGet($key) : mixed
+	{
 		$value = $this->get($key);
 		return is_null($value) ? false : $value;
 	}
@@ -227,13 +244,13 @@ class Data implements \IteratorAggregate, \ArrayAccess {
 	 * @param  int|string $key Key of the item to unset.
 	 * @return bool            True if item existed and was unset. False if item didn't exist.
 	 */
-	public function offsetUnset($key) {
+	public function offsetUnset($key) : void
+	{
 		if ($this->__isset($key)) {
 			$this->remove($key);
-			return true;
-		} else {
-			return false;
+			return;
 		}
+		return;
 	}
 
 	/**
@@ -241,7 +258,8 @@ class Data implements \IteratorAggregate, \ArrayAccess {
 	 * @param  int|string $key  Key of the item to check for existence.
 	 * @return bool             True if the item exists, false if not.
 	 */
-	public function offsetExists($key) {
+	public function offsetExists($key) : bool
+	{
 		return $this->__isset($key);
 	}
 }
