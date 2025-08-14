@@ -38,7 +38,7 @@ abstract class AbstractHelpMenuController extends AbstractController  {
 	protected function displayCommands() : void
     {
 		$cmdLength  = $this->getLongestCommandSubcommandLength() + 4;
-
+		
 		foreach ($this->commandMap as $command => $subcommands) {
 			if ($command == 'test' || $command == 'help') {
 				continue;
@@ -113,10 +113,9 @@ abstract class AbstractHelpMenuController extends AbstractController  {
 	 */
 	protected function intro() : void {
 		$printer = $this->printer;
-		$printer->line(static::INTRO_DELIMITER);
-		$printer->line('/ ' . $this->getCommandToLength("{$this->app->config->app_name}:", strlen(static::INTRO_DELIMITER) - 4) . ' /');
-		$printer->line('/ ' . $this->getCommandToLength("{$this->app->config->app_description}", strlen(static::INTRO_DELIMITER) - 4) . ' /');
-		$printer->line(static::INTRO_DELIMITER);
+		$printer->out($this->app->config->app_name, 'italic');
+		$printer->newline();
+		$printer->line($this->app->config->app_description);
 		$printer->newline();
         return;
 	}
