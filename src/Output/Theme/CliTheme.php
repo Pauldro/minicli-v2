@@ -24,7 +24,6 @@ class CliTheme extends DefaultTheme {
             'success_alt' => [CLIColors::$FG_WHITE, CLIColors::$BG_GREEN],
             'info'        => [CLIColors::$FG_CYAN],
             'info_alt'    => [CLIColors::$FG_WHITE, CLIColors::$BG_CYAN],
-            'info_header' => [CLIColors::$FG_BLUE],
             'bold'        => [CliColors::$BOLD],
             'dim'         => [CliColors::$DIM],
             'italic'      => [CliColors::$ITALIC],
