@@ -1,5 +1,6 @@
 <?php namespace Pauldro\Minicli\v2\App;
 // Base PHP
+use Exception;
 use ReflectionException;
 use Throwable;
 // Minicli
@@ -24,12 +25,24 @@ class App extends MinicliApp {
     private const DEFAULT_SIGNATURE = './minicli help';
 
 /* =============================================================
-	Inits, Boots, Loads
+    Inits, Boots, Loads
 ============================================================= */
     protected function loadDefaultServices() : void
     {
         parent::loadDefaultServices();
         $this->addService('log', new Logger());
+    }
+
+    protected function loadServices() : void
+    {
+        try  {
+            parent::loadServices();
+        } catch (Exception $e) {
+            $this->log->error($e->getMessage());
+            $this->setTheme('\Default');
+            $this->printer->error($e->getMessage());
+            die;
+        }
     }
 
     /**
@@ -68,7 +81,7 @@ class App extends MinicliApp {
     }
 
 /* =============================================================
-	Setters
+    Setters
 ============================================================= */
     public function setTheme(string $theme) : void
     {
@@ -83,7 +96,7 @@ class App extends MinicliApp {
     }
 
 /* =============================================================
-	Execution
+    Execution
 ============================================================= */
     /**
      * @param array<int,string> $argv
@@ -102,14 +115,14 @@ class App extends MinicliApp {
         $controller = $this->commandRegistry->getCallableController((string) $input->command, $input->subcommand);
 
         if (empty($controller)) {
-			$cmd = $input->command;
+            $cmd = $input->command;
 
-			if (strtolower($input->subcommand) == 'default') {
-				$cmd .= " $input->subcommand";
-			}
+            if (strtolower($input->subcommand) == 'default') {
+                $cmd .= " $input->subcommand";
+            }
             $this->error("Controller not found for $cmd");
-			return;
-		}
+            return;
+        }
 
         if ($controller instanceof ControllerInterface) {
             try {
