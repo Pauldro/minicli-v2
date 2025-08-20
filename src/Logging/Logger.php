@@ -13,7 +13,6 @@ class Logger implements ServiceInterface {
     protected const DEFAULT_TIMESTAMP_FORMAT = 'Y-m-d H:i:s';
 
     protected string $logsPath;
-
     protected LogFileType $logFileType;
     protected string $timestampFormat;
 
@@ -34,7 +33,7 @@ class Logger implements ServiceInterface {
      * @param  LogFile $file
      * @return string
      */
-    protected function getLogFilePath(LogFile $file) : string
+    protected function getLogFilePath(LogFileInterface $file) : string
     {
         $filename = $file->value;
 
@@ -93,7 +92,7 @@ class Logger implements ServiceInterface {
      * @param  LogFile|null $file
      * @return void
      */
-    public function log(string $message, array $context = [], LogFile $file = null) : void
+    public function log(string $message, array $context = [], LogFileInterface $file = null) : void
     {
 
        $this->addToLog(sprintf(
@@ -110,7 +109,7 @@ class Logger implements ServiceInterface {
      * @param  LogFile $file
      * @return void
      */
-    protected function addToLog(string $message, LogFile $file) : void
+    protected function addToLog(string $message, LogFileInterface $file) : void
     {
         if (is_dir($this->logsPath) === false) {
             mkdir($this->logsPath, 0775, true);
@@ -147,7 +146,7 @@ class Logger implements ServiceInterface {
      * @param  LogFile $file
      * @return string
      */
-    public function getLastLogLine(LogFile $file) : string
+    public function getLastLogLine(LogFileInterface $file) : string
     {
         $logFile = $this->getLogFilePath($file);
 
