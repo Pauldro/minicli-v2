@@ -24,4 +24,9 @@ class EnvVarsReader {
         $value = $this->get($key, 'false');
         return $value == 'true';
     }
+
+    public function getArray(string $key, $delimiter = ',') : array
+    {
+        return explode($delimiter, $this->get($key));
+    }
 }
