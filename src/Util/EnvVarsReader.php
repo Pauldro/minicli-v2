@@ -6,27 +6,27 @@
  * Utility for reading values from $_ENV
  */
 class EnvVarsReader {
-    public function exists(string $key) : bool
+    public static function exists(string $key) : bool
     {
         return array_key_exists($key, $_ENV);
     }
 
-    public function get(string $key, $default = '') : string
+    public static function get(string $key, $default = '') : string
     {
-        if ($this->exists($key) === false) {
+        if (self::exists($key) === false) {
             return $default;
         }
         return $_ENV[$key];
     }
 
-    public function getBool(string $key) : bool
+    public static function getBool(string $key) : bool
     {
-        $value = $this->get($key, 'false');
+        $value = self::get($key, 'false');
         return $value == 'true';
     }
 
-    public function getArray(string $key, $delimiter = ',') : array
+    public static function getArray(string $key, $delimiter = ',') : array
     {
-        return explode($delimiter, $this->get($key));
+        return explode($delimiter, self::get($key));
     }
 }
