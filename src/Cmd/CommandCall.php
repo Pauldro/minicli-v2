@@ -50,6 +50,15 @@ class CommandCall extends ParentCommandCall {
 		return explode($delimiter, $this->getParam($param));
 	}
 
+	/**
+	 * Return Param value as integer
+	 * @param  string $param
+	 * @return int
+	 */
+	public function getParamInt($param) : int {
+		return intval($this->getParam($param));
+	}
+
 /* =============================================================
 	Internal
 ============================================================= */
