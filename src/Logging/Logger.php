@@ -106,7 +106,7 @@ class Logger implements ServiceInterface {
     /**
      * Add Message to Log
      * @param  string $message
-     * @param  LogFile $file
+     * @param  LogFileInterface $file
      * @return void
      */
     protected function addToLog(string $message, LogFileInterface $file) : void
@@ -128,7 +128,7 @@ class Logger implements ServiceInterface {
      * @param  LogFile $file
      * @return void
      */
-    public function clearLog(LogFile $file) : void
+    public function clearLog(LogFileInterface $file) : void
     {
         $logFile = $this->getLogFilePath($file);
 
