@@ -89,7 +89,7 @@ class Logger implements ServiceInterface {
     /**
      * @param  string $message
      * @param  array<mixed> $context
-     * @param  LogFile|null $file
+     * @param  LogFileInterface|null $file
      * @return void
      */
     public function log(string $message, array $context = [], LogFileInterface $file = null) : void
