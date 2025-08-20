@@ -10,12 +10,12 @@ use Pauldro\Minicli\v2\Cmd\CommandCall;
  * Service that Logs Messages to files
  */
 class Logger implements ServiceInterface {
-    private const DEFAULT_TIMESTAMP_FORMAT = 'Y-m-d H:i:s';
+    protected const DEFAULT_TIMESTAMP_FORMAT = 'Y-m-d H:i:s';
 
-    private string $logsPath;
+    protected string $logsPath;
 
-    private LogFileType $logFileType;
-    private string $timestampFormat;
+    protected LogFileType $logFileType;
+    protected string $timestampFormat;
 
     public function load(App $app) : void
     {
@@ -34,7 +34,7 @@ class Logger implements ServiceInterface {
      * @param  LogFile $file
      * @return string
      */
-    private function getLogFilePath(LogFile $file) : string
+    protected function getLogFilePath(LogFile $file) : string
     {
         $filename = $file->value;
 
@@ -110,7 +110,7 @@ class Logger implements ServiceInterface {
      * @param  LogFile $file
      * @return void
      */
-    private function addToLog(string $message, LogFile $file) : void
+    protected function addToLog(string $message, LogFile $file) : void
     {
         if (is_dir($this->logsPath) === false) {
             mkdir($this->logsPath, 0775, true);
@@ -163,7 +163,7 @@ class Logger implements ServiceInterface {
      * @param  bool    $adaptive
      * @return string
      */
-    private function tailLog(string $filepath, $adaptive = true) : string {
+    protected function tailLog(string $filepath, $adaptive = true) : string {
 		$lines = 1;
 
 		// Open file
