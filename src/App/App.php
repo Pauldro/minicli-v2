@@ -13,6 +13,7 @@ use Minicli\Output\Helper\ThemeHelper;
 // Pauldro Minicli
 use Pauldro\Minicli\v2\Cmd\AbstractController;
 use Pauldro\Minicli\v2\Cmd\CommandCall;
+use Pauldro\Minicli\v2\Cmd\CommandRegistry;
 use Pauldro\Minicli\v2\Output\OutputHandler;
 use Pauldro\Minicli\v2\Logging\Logger;
 
@@ -52,11 +53,32 @@ class App extends MinicliApp {
      */
     public function boot(array $config, string $signature) : void
     {
-        parent::boot($config, $signature);
+        $this->loadConfig($config, $signature);
+        $this->loadServices();
+        $this->addService('commandRegistry', new CommandRegistry($this->parseCommandsPaths()));
+        $this->setTheme($this->config->theme);
+        
         if ($this->config->has('php_ini') === false) {
             return;
         }
         $this->parseSetInis();
+    }
+
+    private function parseCommandsPaths() : array
+    {
+        $commandsPath = $this->config->app_path;
+        if ( ! is_array($commandsPath)) {
+            $commandsPath = [$commandsPath];
+        }
+
+        $commandSources = [];
+        foreach ($commandsPath as $path) {
+            if (str_starts_with($path, '@')) {
+                $path = str_replace('@', $this->base_path.'/vendor/', $path).'/Command';
+            }
+            $commandSources[] = $path;
+        }
+        return $commandSources;
     }
 
     /**
