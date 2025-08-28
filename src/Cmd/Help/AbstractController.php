@@ -199,13 +199,7 @@ abstract class AbstractController extends ParentController {
 	 */
 	protected function getLongestOptLength() : int
     {
-		$length = 0;
-		foreach (array_keys(static::OPTIONS_DEFINITIONS) as $cmd) {
-			if (strlen($cmd) > $length) {
-				$length = strlen($cmd);
-			}
-		}
-		return $length;
+		return Strings::longestStrlen(array_keys(static::OPTIONS_DEFINITIONS)); 
 	}
 
 	/**
@@ -214,13 +208,7 @@ abstract class AbstractController extends ParentController {
 	 */
 	protected function getLongestOptExampleLength() : int
     {
-		$length = 0;
-		foreach (array_values(static::OPTIONS) as $cmd) {
-			if (strlen($cmd) > $length) {
-				$length = strlen($cmd);
-			}
-		}
-		return $length;
+		return Strings::longestStrlen(array_values(static::OPTIONS));
 	}
 
 	/**
@@ -245,13 +233,7 @@ abstract class AbstractController extends ParentController {
 	 */
 	protected function getLongestCommandLength() : int
     {
-		$length = 0;
-		foreach (array_keys(static::COMMAND_DEFINITIONS) as $cmd) {
-			if (strlen($cmd) > $length) {
-				$length = strlen($cmd);
-			}
-		}
-		return $length;
+		return Strings::longestStrlen(array_keys(static::COMMAND_DEFINITIONS));
 	}
 
 	/**
@@ -260,26 +242,21 @@ abstract class AbstractController extends ParentController {
 	 */
 	protected function getLongestCommandSubcommandLength() : int
     {
-		$length = 0;
+		$list = [];
 
 		foreach ($this->commandMap as $command => $subcommands) {
-			if (strlen($command) > $length) {
-				$length = strlen($command);
-			}
-			if (is_array($subcommands)) {
-				foreach ($subcommands as $subcommand) {
-					if ($subcommand == 'default') {
-						continue;
-					}
-					$cmd =	'  ' . $subcommand;
+			$list[] = $command;
 
-					if (strlen($cmd) > $length) {
-						$length = strlen($cmd);
-					}
-				}
+			if (is_array($subcommands) === false) {
+				continue;
+			}
+
+			foreach ($subcommands as $subcommand) {
+				$cmd = '  ' . $subcommand;
+				$list[] = $cmd;
 			}
 		}
-		return $length;
+		return Strings::longestStrlen($list);
 	}
 
 	/**
