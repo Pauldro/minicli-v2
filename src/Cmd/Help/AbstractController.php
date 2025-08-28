@@ -184,8 +184,11 @@ abstract class AbstractController extends ParentController {
 			$this->error("Controller not found: $class");
             return;
 		}
+		/**
+		 * @var AbstractController
+		 */
 		$handler = new $class();
-		$handler->boot($this->app);
+		$handler->boot($this->app, $this->input);
 		$handler->handle();
 		return;
 	}
