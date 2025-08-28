@@ -12,6 +12,33 @@ abstract class AbstractHelpMenuController extends AbstractController  {
 		// '{{cmd}}' => '{{description}}',
 	];
 
+	protected $commandMap = [];
+
+/* =============================================================
+	Init Functions
+============================================================= */
+	/**
+	 * Initialize App
+	 * @return bool
+	 */
+	protected function init() : bool
+    {
+		return $this->initCommandMap();
+	}
+
+	/**
+	 * Initialize Command Map
+	 * @return bool
+	 */
+	protected function initCommandMap() : bool
+    {
+		$this->commandMap = $this->getApp()->commandRegistry->getCommandMap();
+		return true;
+	}
+
+/* =============================================================
+	Minicli Controller Contracts
+============================================================= */
 	public function handle() : void
     {
 		$this->init();
@@ -19,6 +46,9 @@ abstract class AbstractHelpMenuController extends AbstractController  {
 		$this->display();
 	}
 
+/* =============================================================
+	Display Printing
+============================================================= */
 	/**
 	 * Return Default Display
 	 * @return void
@@ -81,7 +111,7 @@ abstract class AbstractHelpMenuController extends AbstractController  {
 
 	/**
 	 * Display Command Defintion
-	 * @param  int $cmdLength
+	 * @param  int    $cmdLength
 	 * @param  string $command
 	 * @param  string $subcommand
 	 * @return void
@@ -121,5 +151,53 @@ abstract class AbstractHelpMenuController extends AbstractController  {
 		$printer->line($this->app->config->app_description);
 		$printer->newline();
         return;
+	}
+	
+/* =============================================================
+	Supplemental
+============================================================= */
+	/**
+	 * Return String Length of Longest Command
+	 * @return int
+	 */
+	protected function getLongestCommandLength() : int
+    {
+		return Strings::longestStrlen(array_keys(static::COMMAND_DEFINITIONS));
+	}
+
+	/**
+	 * Return the Longest Command / Subcommand length
+	 * @return int
+	 */
+	protected function getLongestCommandSubcommandLength() : int
+    {
+		$list = [];
+
+		foreach ($this->commandMap as $command => $subcommands) {
+			$list[] = $command;
+
+			if (is_array($subcommands) === false) {
+				continue;
+			}
+
+			foreach ($subcommands as $subcommand) {
+				$cmd = '  ' . $subcommand;
+				$list[] = $cmd;
+			}
+		}
+		return Strings::longestStrlen($list);
+	}
+
+	/**
+	 * Return Definition of Command if Definition Exists
+	 * @param  string $cmd Command
+	 * @return string
+	 */
+	public function getCommandDefinition($cmd) : string
+    {
+		if (array_key_exists($cmd, static::COMMAND_DEFINITIONS) === false) {
+			return '';
+		}
+		return static::COMMAND_DEFINITIONS[$cmd];
 	}
 }
