@@ -170,7 +170,6 @@ abstract class AbstractController extends ParentController {
 
 	/**
 	 * Display Subcommand
-     * TODO: update finding sub controller
 	 * @return bool
 	 */
 	protected function displaySubcommand() : void
@@ -178,18 +177,10 @@ abstract class AbstractController extends ParentController {
 		if (in_array($this->input->lastArg(), static::SUBCOMMANDS) === false) {
 			return;
 		}
-		$reflector = new ReflectionClass(get_class($this));
-		$baseNs = $reflector->getNamespaceName();
-		$ns = $baseNs . '\\' . ucfirst(static::COMMAND) . '\\';
-		$class = $ns . ucfirst($this->input->lastArg()) . 'Controller';
-		if (class_exists($class) === false) {
-			$this->error("Controller not found: $class");
-            return;
+		$handler = $this->getSubcommandController($this->input->subcommand, $this->input->lastArg());
+		if (empty($handler)) {
+			return;
 		}
-		/**
-		 * @var AbstractController
-		 */
-		$handler = new $class();
 		$handler->boot($this->app, $this->input);
 		$handler->handle();
 		return;
@@ -230,5 +221,16 @@ abstract class AbstractController extends ParentController {
 			return '';
 		}
 		return static::OPTIONS_DEFINITIONS[$opt];
+	}
+
+	protected function getSubcommandController(string $command, string $subcommand) : ParentController|false {
+		$reflector = new ReflectionClass(get_class($this));
+		$ns = $reflector->getNamespaceName() . '\\' . ucfirst($command) . '\\';
+		$class = $ns . ucfirst($subcommand) . 'Controller';
+
+		if (class_exists($class) === false) {
+			return $this->error("Controller not found: $class");
+		}
+		return new $class();
 	}
 }
