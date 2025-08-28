@@ -1,4 +1,6 @@
 <?php namespace Pauldro\Minicli\v2\Cmd\Help;
+// Pauldro Minicli
+use Pauldro\Minicli\v2\Util\StringUtilities as Strings;
 
 
 /**
@@ -90,18 +92,20 @@ abstract class AbstractHelpMenuController extends AbstractController  {
 		$handler = $this->getApp()->commandRegistry->getCallableController($command, $subcommand);
 
         if (empty($handler)) {
+			$line = sprintf('%s%s', $printer->style(Strings::pad($command, $cmdLength), 'info'), $this->getCommandDefinition($command));
+			$printer->out($line, false);
             return;
         }
 
         $printer->newline();
 
 		if ($subcommand == 'default') {
-			$line = sprintf('%s%s', $printer->style($this->getCommandToLength($command, $cmdLength), 'info'), $handler::DESCRIPTION);
+			$line = sprintf('%s%s', $printer->style(Strings::pad($command, $cmdLength), 'info'), $handler::DESCRIPTION);
 			$printer->out($line, false);
 			return;
 		}
 		$cmd = $printer->spaces(2) . $subcommand;
-		$line = sprintf('%s%s', $printer->style($this->getCommandToLength($cmd, $cmdLength), 'info'), $handler::DESCRIPTION);
+		$line = sprintf('%s%s', $printer->style(Strings::pad($cmd, $cmdLength), 'info'), $handler::DESCRIPTION);
 		$printer->out($line, false);
 		return;
 	}
