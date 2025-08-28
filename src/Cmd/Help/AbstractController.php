@@ -1,8 +1,10 @@
 <?php namespace Pauldro\Minicli\v2\Cmd\Help;
 // PHP Core
 use ReflectionClass;
-// Pauldro\Minicli
+// Pauldro Minicli
 use Pauldro\Minicli\v2\Cmd\AbstractController as ParentController;
+use Pauldro\Minicli\v2\Util\StringUtilities as Strings;
+
 
 /**
  * AbstractController
@@ -82,7 +84,7 @@ abstract class AbstractController extends ParentController {
 		$printer->line($printer->style('Options:', 'info_header'));
 
 		foreach (static::OPTIONS as $option => $example) {
-			$printer->line(sprintf('%s%s%s', $printer->spaces(2), $this->getOptToLength($example, $optLength), $this->getOptDefinition($option)));
+			$printer->line(sprintf('%s%s%s', $printer->spaces(2), Strings::pad($example, $optLength), $this->getOptDefinition($option)));
 		}
 		return;
 	}
@@ -106,7 +108,7 @@ abstract class AbstractController extends ParentController {
 				continue;
 			}
 			
-			$example = $this->getOptToLength($option, $optLength);
+			$example = Strings::pad($option, $optLength);
 			$description = $this->getOptDefinition($option);
 			$printer->line(sprintf('%s%s%s', $printer->spaces(2), $example, $description));
 		}
@@ -219,17 +221,6 @@ abstract class AbstractController extends ParentController {
 	}
 
 	/**
-	 * Pad Command to Desired String Length
-	 * @param  string $cmd	  Command
-	 * @param  int	  $length Desired Length
-	 * @return string
-	 */
-	protected function getOptToLength($cmd, $length) : string
-    {
-		return str_pad($cmd, $length, ' ');
-	}
-
-	/**
 	 * Return Argument Defination
 	 * @param  string $opt Option, Argument (param|flag)
 	 * @return string
@@ -286,17 +277,6 @@ abstract class AbstractController extends ParentController {
 			}
 		}
 		return $length;
-	}
-
-	/**
-	 * Pad Command to Desired String Length
-	 * @param  string $cmd	  Command
-	 * @param  int	  $length Desired Length
-	 * @return string
-	 */
-	protected function getCommandToLength($cmd, $length) : string
-    {
-		return str_pad($cmd, $length, ' ');
 	}
 
 	/**
