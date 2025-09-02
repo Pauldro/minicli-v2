@@ -139,7 +139,7 @@ class App extends MinicliApp {
         if (empty($controller)) {
             $cmd = $input->command;
 
-            if (strtolower($input->subcommand) == 'default') {
+            if (strtolower($input->subcommand) != 'default') {
                 $cmd .= " $input->subcommand";
             }
             $this->error("Controller not found for $cmd");
