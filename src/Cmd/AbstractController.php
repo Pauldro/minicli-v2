@@ -47,6 +47,22 @@ abstract class AbstractController extends CommandController {
 	}
 
 	/**
+	 * Setup controller
+	 * @param  App $app
+	 * @param  CommandCall $input
+	 * @return void
+	 */
+	public function bootstrap(MinicliApp $app, MinicliCommandCall $input) : void
+	{
+		$this->app     = $app;
+        $this->config  = $app->config;
+        $this->logger  = $app->logger;
+        $this->log     = $app->log;
+		$this->printer = $app->cliprinter;
+		$this->input   = $input;
+	}
+
+	/**
      * The list of parameters required by the command.
      *
      * @return array<int, string>
