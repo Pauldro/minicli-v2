@@ -55,7 +55,8 @@ class CommandCall extends ParentCommandCall {
 	 * @param  string $param
 	 * @return int
 	 */
-	public function getParamInt($param) : int {
+	public function getParamInt($param) : int
+	{
 		return intval($this->getParam($param));
 	}
 
