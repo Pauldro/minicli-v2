@@ -1,8 +1,6 @@
 <?php namespace Pauldro\Minicli\v2\Util;
 
 /**
- * EnvVarsReader
- * 
  * Utility for reading values from $_ENV
  */
 class EnvVarsReader {
