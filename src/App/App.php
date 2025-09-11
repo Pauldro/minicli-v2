@@ -16,11 +16,13 @@ use Pauldro\Minicli\v2\Cmd\CommandCall;
 use Pauldro\Minicli\v2\Cmd\CommandRegistry;
 use Pauldro\Minicli\v2\Output\OutputHandler;
 use Pauldro\Minicli\v2\Logging\Logger;
+use Pauldro\Minicli\v2\Services\Env;
 
 
 /**
  * @property Logger        $log
  * @property OutputHandler $cliprinter
+ * @property Env           $dotenv
  */
 class App extends MinicliApp {
     private const DEFAULT_SIGNATURE = './minicli help';
@@ -32,6 +34,7 @@ class App extends MinicliApp {
     {
         parent::loadDefaultServices();
         $this->addService('log', new Logger());
+        $this->addService('dotenv', new Env());
     }
 
     protected function loadServices() : void
