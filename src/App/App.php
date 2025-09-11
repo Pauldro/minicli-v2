@@ -85,7 +85,8 @@ class App extends MinicliApp {
      * Parse, Set Inis
      * @return void
      */
-    private function parseSetInis() {
+    private function parseSetInis() : void
+    {
         if ($this->config->has('php_ini') === false) {
             return;
         }
