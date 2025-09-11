@@ -8,6 +8,11 @@ class MissingEnvVarsException extends Exception {
     private $vars = [];
     private $filepath = '';
 
+    public function setVars(array $vars) : void 
+    {
+        $this->vars = $vars;
+    }
+
     /**
      * Parse Missing Variables
      * @param  ValidationException $e

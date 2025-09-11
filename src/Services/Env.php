@@ -10,9 +10,8 @@ use Minicli\ServiceInterface;
 use Pauldro\Minicli\v2\Exceptions\MissingEnvVarsException;
 use Pauldro\Minicli\v2\Util\EnvVarsReader as EnvVars;
 
-
 /**
- * Wrapper for Dotenv for environment variables
+ * Wrapper for Dotenv for environment variables for the main .env file
  */
 class Env implements ServiceInterface {
     const REQUIRED = [];
@@ -28,7 +27,7 @@ class Env implements ServiceInterface {
      */
     public function load(App $app) : void
     {
-        $this->dir = $app->base_path;
+        $this->dir = rtrim($app->base_path, '/') . '/';
         try {
             $dotenv = Dotenv::createImmutable($this->dir);
             $dotenv->load();
@@ -61,6 +60,26 @@ class Env implements ServiceInterface {
     }
 
     /**
+     * Return if required variables are set
+     * @param  array  $vars
+     * @param  string $prefix
+     * @throws MissingEnvVarsException
+     * @return bool
+     */
+    public function requiredPrefixed(array $vars, string $prefix = '') : bool
+    {
+        if (empty($prefix)) {
+            return $this->required($vars);
+        }
+        $newVars = [];
+
+        foreach ($vars as $var) {
+            $newVars[] = "$prefix.$var";
+        }
+        return $this->required($newVars);
+    }
+
+    /**
      * Return if variable is set
      * @param  string $var
      * @return bool
@@ -78,12 +97,12 @@ class Env implements ServiceInterface {
     /**
      * Return value
      * @param  string $var
-     * @return string|null
+     * @return string
      */
-    public function get(string $var) : string|null
+    public function get(string $var) : string
     {
         if ($this->exists($var) === false) {
-            return null;
+            return '';
         }
         return EnvVars::get($var);
     }
