@@ -122,7 +122,12 @@ abstract class AbstractHelpMenuController extends AbstractController  {
 		$handler = $this->getApp()->commandRegistry->getCallableController($command, $subcommand);
 
         if (empty($handler)) {
-			$printer->error("Controller for $command $subcommand not found");
+			if ($subcommand != 'default') {
+				return;
+			}
+			$printer->newline();
+			$line = $printer->style(Strings::pad($command, $cmdLength), 'info');
+			$printer->out($line, false);
             return;
         }
 
