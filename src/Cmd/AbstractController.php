@@ -1,4 +1,6 @@
 <?php namespace Pauldro\Minicli\v2\Cmd;
+// PHP
+use BadMethodCallException;
 // Minicli
 use Minicli\App as MinicliApp;
 use Minicli\Command\CommandCall as MinicliCommandCall;
@@ -11,7 +13,6 @@ use Pauldro\Minicli\v2\Output\OutputHandler as Printer;
 
 
 /**
- * AbstractController
  * Template for Handling and Executing Commands
  *
  * @property CommandCall $input
@@ -189,4 +190,20 @@ abstract class AbstractController extends CommandController {
     {
 		return $this->input->getParamArray($param, $delimiter);
 	}
+
+/* =============================================================
+	Supplemental
+============================================================= */
+	/**
+     * @param string $name
+     * @param array<int,mixed> $arguments
+     * @return mixed
+     */
+    public function __call(string $name, array $arguments): mixed
+    {
+        if (method_exists($this->printer, $name)) {
+            return $this->printer->$name(...$arguments);
+        }
+        throw new BadMethodCallException("Method {$name} does not exist.");
+    }
 }
