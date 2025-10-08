@@ -21,15 +21,11 @@ class DataArray extends SimpleArray {
 /* =============================================================
 	Getters
 ============================================================= */
-	/**
-	 * Return Array of Arrays
-	 * NOTE: use if listing Data Classes
-	 * @return array[array]
-	 */
-	public function getJsonArray() {
+	public function getArray() : array
+	{
 		$data = [];
 		foreach ($this->data as $item) {
-			$data[] = $item->getJsonArray();
+			$data[] = $item->getArray();
 		}
 		return $data;
 	}

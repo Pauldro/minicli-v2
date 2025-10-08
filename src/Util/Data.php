@@ -28,15 +28,6 @@ class Data implements \IteratorAggregate, \ArrayAccess {
 	}
 
 	/**
-	 * Return this data as an array
-	 * @return array
-	 */
-	public function getJsonArray() : array
-	{
-		return $this->data;
-	}
-
-	/**
 	 * Retrieve the value for a previously set property, or retrieve an API variable
 	 * ~~~~~
 	 * // Retrieve the value of a property
