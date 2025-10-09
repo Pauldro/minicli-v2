@@ -3,14 +3,16 @@
 use ArrayObject;
 
 /**
- * Data
- *
  * Container for Data
  *
- * @property array $data Array where get/set properties are stored
+ * @property array $data          Array where properties are stored
+ * @property bool  $trackChanges  Track Changes?
+ * @property array $changes       Array of previous values keyed by fieldnames
  */
 class Data implements \IteratorAggregate, \ArrayAccess {
 	protected $data = [];
+	protected $trackChanges = false;
+	protected $changes = [];
 
 /* =============================================================
 	Getters
@@ -90,6 +92,23 @@ class Data implements \IteratorAggregate, \ArrayAccess {
 		return $this->__isset($key);
 	}
 
+	/**
+	 * Ensures that isset() and empty() work for this classes properties.
+	 * @param string $key
+	 * @return bool
+	 */
+	public function __isset($key) : bool 
+	{
+		return isset($this->data[$key]);
+	}
+
+	protected function isEqual($key, $value1, $value2) : bool
+	{
+		if($key) {} // avoid unused argument notice
+		// $key not used here, but may be used by child classes
+		return $value1 === $value2; 	
+	}
+
 /* =============================================================
 	Setters
 ============================================================= */
@@ -106,9 +125,9 @@ class Data implements \IteratorAggregate, \ArrayAccess {
 	 * // Set a property using array access
 	 * $item['foo'] = 'bar';
 	 * ~~~~~
-	 *
-	 * @param  string $key Name of property you want to set
-	 * @param  mixed $value Value of property
+	 * NOTE: uses change tracking
+	 * @param  string $key    Name of property you want to set
+	 * @param  mixed  $value  Value of property
 	 * @return $this
 	 */
 	public function set($key, $value) : static
@@ -125,7 +144,34 @@ class Data implements \IteratorAggregate, \ArrayAccess {
 			return $this;
 		}
 
+		if ($this->trackChanges) {
+			$oldValue = array_key_exists($key, $this->data) ? $key : null;
+			if ($this->isEqual($key, $oldValue, $value)) {
+				$this->trackChange($key, $oldValue, $value);
+			}
+		}
 		$this->data[$key] = $value;
+		return $this;
+	}
+
+	/**
+	 * Set value without tracking change
+	 * @param  mixed $key
+	 * @param  mixed $value
+	 * @return void
+	 */
+	public function setWithoutTracking($key, $value) : static
+	{
+		$isTracking = $this->getTrackChanges();
+		if ($isTracking) {
+			$this->setTrackChanges(false);
+		}
+
+		$this->set($key, $value);
+
+		if ($isTracking) {
+			$this->setTrackChanges(true);
+		}
 		return $this;
 	}
 
@@ -159,16 +205,6 @@ class Data implements \IteratorAggregate, \ArrayAccess {
 		return;
 	}
 
-	/**
-	 * Ensures that isset() and empty() work for this classes properties.
-	 * @param string $key
-	 * @return bool
-	 */
-	public function __isset($key) : bool 
-	{
-		return isset($this->data[$key]);
-	}
-
 /* =============================================================
 	Removal
 ============================================================= */
@@ -192,6 +228,8 @@ class Data implements \IteratorAggregate, \ArrayAccess {
 	 */
 	public function remove($key) : static
 	{
+		$value = isset($this->data[$key]) ? $this->data[$key] : null;
+		$this->trackChange($key, $value, null); 
 		unset($this->data[$key]);
 		return $this;
 	}
@@ -252,5 +290,76 @@ class Data implements \IteratorAggregate, \ArrayAccess {
 	public function offsetExists($key) : bool
 	{
 		return $this->__isset($key);
+	}
+
+/* =============================================================
+	Changes
+============================================================= */
+	public function getTrackChanges() : bool
+	{
+		return $this->trackChanges; 
+	}
+
+	public function isTrackingChanges() : bool
+	{
+		return $this->trackChanges; 
+	}
+
+	public function setTrackChanges(bool $track) : void
+	{
+		$this->trackChanges = $track;
+	}
+
+	public function untrackChange($fieldname) : void
+	{
+		unset($this->changes[$fieldname]); 
+	}
+
+	public function hasChanged($fieldname = '') : bool
+	{
+		if (empty($fieldname)) {
+			return count($this->changes) > 0; 
+		}
+		return array_key_exists($fieldname, $this->changes); 
+	}
+
+	public function resetChanges($trackChanges = true) : void
+	{
+		$this->changes = [];
+	}
+
+	public function getChanges() : array
+	{
+		return $this->changes;
+	}
+
+	/**
+	 * Return current values of changed fields
+	 * @return array<mixed|null>
+	 */
+	public function getCurrentChanges() : array
+	{
+		$keys = array_keys($this->changes);
+
+		if (empty($keys)) {
+			return [];
+		}
+		$list = [];
+
+		foreach ($keys as $key) {
+			$list[$key] = $this->get($key);
+		}
+		return $list;
+	}
+
+	public function trackChange($fieldname, $old = null, $new = null) : void
+	{
+		if ($this->trackChanges === false) {
+			return;
+		}
+		if ($this->isEqual($fieldname, $old, $new)) {
+			return;
+		}
+		$this->changes[$fieldname] = $old;
 	}
 }
