@@ -145,8 +145,8 @@ class Data implements \IteratorAggregate, \ArrayAccess {
 		}
 
 		if ($this->trackChanges) {
-			$oldValue = array_key_exists($key, $this->data) ? $key : null;
-			if ($this->isEqual($key, $oldValue, $value)) {
+			$oldValue = array_key_exists($key, $this->data) ? $this->data[$key] : null;
+			if ($this->isEqual($key, $oldValue, $value) === false) {
 				$this->trackChange($key, $oldValue, $value);
 			}
 		}
