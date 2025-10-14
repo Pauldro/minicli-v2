@@ -10,7 +10,7 @@ use Minicli\Exception\MissingParametersException;
 use Pauldro\Minicli\v2\App\App;
 use Pauldro\Minicli\v2\Logging\Logger;
 use Pauldro\Minicli\v2\Output\OutputHandler as Printer;
-
+use Pauldro\Minicli\v2\Util\StringUtilities as Strings;
 
 /**
  * Template for Handling and Executing Commands
@@ -189,6 +189,29 @@ abstract class AbstractController extends CommandController {
 	protected function getParamArray($param, $delimiter = ",") : array
     {
 		return $this->input->getParamArray($param, $delimiter);
+	}
+
+/* =============================================================
+	Displays
+============================================================= */
+	/**
+	 * Display Key Value Data
+	 * @param  array $data
+	 * @return void
+	 */
+	protected function displayDictionary(array $data) : void
+	{
+		$printer = $this->printer;
+		$titleLength = Strings::longestStrlen(array_keys($data));
+		
+		foreach ($data as $title => $value) {
+            $lineData = [
+                $printer->spaces(4),
+                $printer->filterOutput(Strings::pad($title, $titleLength + 2), 'success'),
+                $value
+            ];
+            $printer->line(implode('', $lineData));
+		}
 	}
 
 /* =============================================================
