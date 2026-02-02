@@ -31,11 +31,16 @@ class Logger implements ServiceInterface {
     /**
      * Return Path to Log File
      * @param  LogFile $file
+     * @param  string  $suffix
      * @return string
      */
-    protected function getLogFilePath(LogFileInterface $file) : string
+    protected function getLogFilePath(LogFileInterface $file, string $suffix = '') : string
     {
         $filename = $file->value;
+
+        if ($suffix) {
+            return sprintf("{$this->logsPath}/$filename-%s.log", $suffix);
+        }
 
         return match ($this->logFileType) {
             LogFileType::DAILY => sprintf("{$this->logsPath}/$filename-%s.log", date('Y-m-d')),
@@ -136,6 +141,32 @@ class Logger implements ServiceInterface {
             return;
         }
         file_put_contents($logFile, '');
+    }
+
+    /**
+     * Archive Log for the last month
+     * @param  LogFileInterface $file
+     * @return bool
+     */
+    public function archiveLogPrevMonth(LogFileInterface $file) : bool
+    {
+        $date = date('Ym', strtotime("-1 month"));
+
+		$logFilepath = $this->getLogFilePath($file);
+
+		$archiveFilepath = $this->getLogFilePath($file, $date);
+
+		if (file_exists($logFilepath) === false) {
+			file_put_contents($archiveFilepath, '');
+            return false;
+		}
+		copy($logFilepath, $archiveFilepath);
+		if (file_exists($archiveFilepath) === false) {
+			echo $archiveFilepath , "does not exist " . PHP_EOL;
+			return false;
+		}
+		file_put_contents($logFilepath, '');
+        return true;
     }
 
 /* =============================================================
