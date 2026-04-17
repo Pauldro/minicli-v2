@@ -1,9 +1,9 @@
 <?php namespace Pauldro\Minicli\v2\Cmd\Help;
 // PHP Core
 use ReflectionClass;
-// Pauldro Minicli
+// Pauldro
 use Pauldro\Minicli\v2\Cmd\AbstractController as ParentController;
-use Pauldro\Minicli\v2\Util\StringUtilities as Strings;
+use Pauldro\UtilityBelt\Strings;
 
 
 /**

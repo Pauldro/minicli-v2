@@ -1,6 +1,6 @@
 <?php namespace Pauldro\Minicli\v2\Cmd\Help;
-// Pauldro Minicli
-use Pauldro\Minicli\v2\Util\StringUtilities as Strings;
+// Pauldro
+use Pauldro\UtilityBelt\Strings;
 
 
 /**

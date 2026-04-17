@@ -10,7 +10,7 @@ use Minicli\Exception\MissingParametersException;
 use Pauldro\Minicli\v2\App\App;
 use Pauldro\Minicli\v2\Logging\Logger;
 use Pauldro\Minicli\v2\Output\OutputHandler as Printer;
-use Pauldro\Minicli\v2\Util\StringUtilities as Strings;
+use Pauldro\UtilityBelt\Strings;
 
 /**
  * Template for Handling and Executing Commands
