@@ -15,15 +15,15 @@ class JsonFetcher extends FileFetcher {
     public function fetch(string $filepath) : mixed
     {
        if ($this->exists($filepath) === false) {
-			$this->errorMsg = 'File not found: ' . $filepath;
-			return [];
-		}
+            $this->errorMsg = 'File not found: ' . $filepath;
+            return [];
+        }
         $this->convertToUtf8($filepath) ;
-		$json = json_decode(file_get_contents($filepath), true);
+        $json = json_decode(file_get_contents($filepath), true);
 
         if (empty($json)) {
-			$this->errorMsg = "The '$filepath' JSON contains errors, JSON ERROR: ". json_last_error();
-		}
-		return $json;
+            $this->errorMsg = "The '$filepath' JSON contains errors, JSON ERROR: ". json_last_error();
+        }
+        return $json;
     }
 }

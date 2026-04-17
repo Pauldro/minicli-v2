@@ -17,21 +17,21 @@ class FileFetcher {
 
     public function __construct(string $dir) {
         if (is_dir($dir) === false) {
-			throw new Exception("Directory not found: '$dir'");
-		}
-		$this->dir = $dir;
+            throw new Exception("Directory not found: '$dir'");
+        }
+        $this->dir = $dir;
         $this->fetcher = Fetcher::instance();
     }
 
     /**
-	 * Return Filepath
-	 * @param  string $filename
-	 * @return string
-	 */
-	public function filepath(string $filename) : string
+     * Return Filepath
+     * @param  string $filename
+     * @return string
+     */
+    public function filepath(string $filename) : string
     {
-		return rtrim($this->dir, '/') . '/' . $filename;
-	}
+        return rtrim($this->dir, '/') . '/' . $filename;
+    }
 
     /**
      * Return if file exists

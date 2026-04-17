@@ -13,20 +13,20 @@ class JsonFetcher extends FileFetcher {
     protected $fetcher;
     public string $errorMsg;
 
-	public function __construct(string $dir) {
-		parent::__construct($dir);
-		$this->fetcher = Fetcher::instance();
-	}
+    public function __construct(string $dir) {
+        parent::__construct($dir);
+        $this->fetcher = Fetcher::instance();
+    }
 
     /**
-	 * Return Filepath
-	 * @param  string $filename
-	 * @return string
-	 */
-	public function filepath(string $filename) : string
+     * Return Filepath
+     * @param  string $filename
+     * @return string
+     */
+    public function filepath(string $filename) : string
     {
         $filename = preg_replace('/\.\w+$/', '', $filename);
-		$filename .= '.json';
-		return parent::filepath($filename);
-	}
+        $filename .= '.json';
+        return parent::filepath($filename);
+    }
 }

@@ -26,7 +26,7 @@ class Logger implements ServiceInterface {
     }
 
 /* =============================================================
-	LogFilepath Functions
+    LogFilepath Functions
 ============================================================= */
     /**
      * Return Path to Log File
@@ -49,7 +49,7 @@ class Logger implements ServiceInterface {
     }
 
 /* =============================================================
-	Logging Functions
+    Logging Functions
 ============================================================= */
     /**
      * @param  string $message
@@ -152,25 +152,25 @@ class Logger implements ServiceInterface {
     {
         $date = date('Ym', strtotime("-1 month"));
 
-		$logFilepath = $this->getLogFilePath($file);
+        $logFilepath = $this->getLogFilePath($file);
 
-		$archiveFilepath = $this->getLogFilePath($file, $date);
+        $archiveFilepath = $this->getLogFilePath($file, $date);
 
-		if (file_exists($logFilepath) === false) {
-			file_put_contents($archiveFilepath, '');
+        if (file_exists($logFilepath) === false) {
+            file_put_contents($archiveFilepath, '');
             return false;
-		}
-		copy($logFilepath, $archiveFilepath);
-		if (file_exists($archiveFilepath) === false) {
-			echo $archiveFilepath , "does not exist " . PHP_EOL;
-			return false;
-		}
-		file_put_contents($logFilepath, '');
+        }
+        copy($logFilepath, $archiveFilepath);
+        if (file_exists($archiveFilepath) === false) {
+            echo $archiveFilepath , "does not exist " . PHP_EOL;
+            return false;
+        }
+        file_put_contents($logFilepath, '');
         return true;
     }
 
 /* =============================================================
-	Log Reading Functions
+    Log Reading Functions
 ============================================================= */
     /**
      * Return the Last Line of a LogFile
@@ -194,84 +194,84 @@ class Logger implements ServiceInterface {
      * @return string
      */
     protected function tailLog(string $filepath, $adaptive = true) : string {
-		$lines = 1;
+        $lines = 1;
 
-		// Open file
-		$f = @fopen($filepath, "rb");
-		if ($f === false) return '';
+        // Open file
+        $f = @fopen($filepath, "rb");
+        if ($f === false) return '';
 
-		// Sets buffer size, according to the number of lines to retrieve.
-		// This gives a performance boost when reading a few lines from the file.
-		if (!$adaptive) $buffer = 4096;
-		else $buffer = ($lines < 2 ? 64 : ($lines < 10 ? 512 : 4096));
+        // Sets buffer size, according to the number of lines to retrieve.
+        // This gives a performance boost when reading a few lines from the file.
+        if (!$adaptive) $buffer = 4096;
+        else $buffer = ($lines < 2 ? 64 : ($lines < 10 ? 512 : 4096));
 
-		// Jump to last character
-		fseek($f, -1, SEEK_END);
+        // Jump to last character
+        fseek($f, -1, SEEK_END);
 
-		// Read it and adjust line number if necessary
-		// (Otherwise the result would be wrong if file doesn't end with a blank line)
-		if (fread($f, 1) != "\n") $lines -= 1;
-		
-		// Start reading
-		$output = '';
-		$chunk = '';
+        // Read it and adjust line number if necessary
+        // (Otherwise the result would be wrong if file doesn't end with a blank line)
+        if (fread($f, 1) != "\n") $lines -= 1;
+        
+        // Start reading
+        $output = '';
+        $chunk = '';
 
-		// While we would like more
-		while (ftell($f) > 0 && $lines >= 0) {
+        // While we would like more
+        while (ftell($f) > 0 && $lines >= 0) {
 
-			// Figure out how far back we should jump
-			$seek = min(ftell($f), $buffer);
+            // Figure out how far back we should jump
+            $seek = min(ftell($f), $buffer);
 
-			// Do the jump (backwards, relative to where we are)
-			fseek($f, -$seek, SEEK_CUR);
+            // Do the jump (backwards, relative to where we are)
+            fseek($f, -$seek, SEEK_CUR);
 
-			// Read a chunk and prepend it to our output
-			$output = ($chunk = fread($f, $seek)) . $output;
+            // Read a chunk and prepend it to our output
+            $output = ($chunk = fread($f, $seek)) . $output;
 
-			// Jump back to where we started reading
-			fseek($f, -mb_strlen($chunk, '8bit'), SEEK_CUR);
+            // Jump back to where we started reading
+            fseek($f, -mb_strlen($chunk, '8bit'), SEEK_CUR);
 
-			// Decrease our line counter
-			$lines -= substr_count($chunk, "\n");
-		}
+            // Decrease our line counter
+            $lines -= substr_count($chunk, "\n");
+        }
 
-		// While we have too many lines
-		// (Because of buffer size we might have read too many)
-		while ($lines++ < 0) {
-			// Find first newline and remove all text before that
-			$output = substr($output, strpos($output, "\n") + 1);
-		}
+        // While we have too many lines
+        // (Because of buffer size we might have read too many)
+        while ($lines++ < 0) {
+            // Find first newline and remove all text before that
+            $output = substr($output, strpos($output, "\n") + 1);
+        }
 
-		// Close file and return
-		fclose($f);
-		return trim($output);
-	}
+        // Close file and return
+        fclose($f);
+        return trim($output);
+    }
 
 /* =============================================================
-	Log String Functions
+    Log String Functions
 ============================================================= */
     /**
-	 * Return array formatted as string for Log delimited by \t
-	 * @param  array $parts
-	 * @return string
-	 */
-	public static function createLogString($parts = []) : string
+     * Return array formatted as string for Log delimited by \t
+     * @param  array $parts
+     * @return string
+     */
+    public static function createLogString($parts = []) : string
     {
-		return implode("\t", $parts);
-	}
+        return implode("\t", $parts);
+    }
 
     /**
-	 * Sanitize Command for Log Use
-	 * @return string
-	 */
-	public static function sanitizeCmdForLog(CommandCall $input, array $sensitiveParams) : string
+     * Sanitize Command for Log Use
+     * @return string
+     */
+    public static function sanitizeCmdForLog(CommandCall $input, array $sensitiveParams) : string
     {
-		$cmd = implode(' ', $input->getRawArgs());
+        $cmd = implode(' ', $input->getRawArgs());
 
-		foreach ($sensitiveParams as $param) {
-			$find = "$param=" . $input->getParam($param);
-			$cmd  = str_replace($find, "$param=***", $cmd);
-		}
-		return $cmd;
-	}
+        foreach ($sensitiveParams as $param) {
+            $find = "$param=" . $input->getParam($param);
+            $cmd  = str_replace($find, "$param=***", $cmd);
+        }
+        return $cmd;
+    }
 }

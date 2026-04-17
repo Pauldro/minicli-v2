@@ -13,8 +13,8 @@ class VendorFilepathParser implements ServiceInterface {
 
     public static function instance() : VendorFilepathParser
     {
-		return self::$instance;
-	}
+        return self::$instance;
+    }
 
     public function load(App $app): void
     {

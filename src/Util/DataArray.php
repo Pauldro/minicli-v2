@@ -16,53 +16,53 @@
  * @property array $data Array where values are stored
  */
 class DataArray extends SimpleArray {
-	protected $data = [];
+    protected $data = [];
 
 /* =============================================================
-	Getters
+    Getters
 ============================================================= */
-	public function getArray() : array
-	{
-		$data = [];
-		foreach ($this->data as $item) {
-			$data[] = $item->getArray();
-		}
-		return $data;
-	}
+    public function getArray() : array
+    {
+        $data = [];
+        foreach ($this->data as $item) {
+            $data[] = $item->getArray();
+        }
+        return $data;
+    }
 
-	/**
-	 * Return new/blank item of the type that this DataArray holds
-	 * @return Data
-	 */
-	public function newItem() : Data
-	{
-		return new Data();
-	}
+    /**
+     * Return new/blank item of the type that this DataArray holds
+     * @return Data
+     */
+    public function newItem() : Data
+    {
+        return new Data();
+    }
 
-	/**
-	 * Return new/blank item of the type that this DataArray holds
-	 * @return Data
-	 */
-	public function makeBlankItem() : Data
-	{
-		return $this->newItem();
-	}
+    /**
+     * Return new/blank item of the type that this DataArray holds
+     * @return Data
+     */
+    public function makeBlankItem() : Data
+    {
+        return $this->newItem();
+    }
 
-	/**
-	 * Return all the values for a fieldname
-	 * @param  string $name
-	 * @return array
-	 */
-	public function fieldValues(string $name) : array
-	{
-		$values = [];
+    /**
+     * Return all the values for a fieldname
+     * @param  string $name
+     * @return array
+     */
+    public function fieldValues(string $name) : array
+    {
+        $values = [];
 
-		foreach ($this as $item) {
-			if ($item->has($name) === false) {
-				continue;
-			}
-			$values[] = $item->get($name);
-		}
-		return $values;
-	}
+        foreach ($this as $item) {
+            if ($item->has($name) === false) {
+                continue;
+            }
+            $values[] = $item->get($name);
+        }
+        return $values;
+    }
 }
