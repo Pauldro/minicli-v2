@@ -22,7 +22,7 @@
 		"vlucas/phpdotenv": "^5.6@dev"
 	},
 	"require-dev": {
-		"pauldro/utility-belt-v2": "^0.1",
+		"pauldro/utility-belt-v2": "dev-main",
 		"minicli/minicli": "^4.2",
 		"vlucas/phpdotenv": "^5.6@dev"
 	}
