@@ -1,16 +1,17 @@
 <?php namespace Pauldro\Minicli\v2\Util\Files;
 
+use Pauldro\UtilityBelt\Files\FileWriter as FileWriterParent;
+
 /**
- * FileWriter
  * Writes Files
  *
  * @property string $errorMsg
  * @property string $lastWrittenFile
  */
-class FileWriter {
+class FileWriter extends FileWriterParent {
     private static $instance;
-    public  $errorMsg;
-    public  $lastWrittenFile;
+    public $errorMsg;
+    public $lastWrittenFile;
 
     public static function instance() : FileWriter
     {
@@ -19,21 +20,4 @@ class FileWriter {
         }
         return self::$instance;
     }
-
-    /**
-     * Write to File
-     * @param  string        $filepath filepath
-     * @param  mixed|string  $content
-     * @return bool
-     */
-    public function write($filepath, $content) : bool
-    {
-        if (boolval(file_put_contents($filepath, $content))) {
-            $this->lastWrittenFile = $filepath;
-            return true;
-        }
-        $this->errorMsg = "Failed to Write File: '$filepath'";
-        return false;
-    }
-
 }

@@ -1,29 +1,10 @@
 <?php namespace Pauldro\Minicli\v2\Util\Files;
 
+use Pauldro\UtilityBelt\Files\JsonFetcher as JsonFetcherParent;
+
 /**
- * JsonFetcher
  * Utility for fetching JSON file contents
  */
-class JsonFetcher extends FileFetcher {
+class JsonFetcher extends JsonFetcherParent {
     protected static $instance;
-
-    /**
-     * Fetch File Contents
-     * @param  string $filepath
-     * @return array
-     */
-    public function fetch(string $filepath) : mixed
-    {
-       if ($this->exists($filepath) === false) {
-            $this->errorMsg = 'File not found: ' . $filepath;
-            return [];
-        }
-        $this->convertToUtf8($filepath) ;
-        $json = json_decode(file_get_contents($filepath), true);
-
-        if (empty($json)) {
-            $this->errorMsg = "The '$filepath' JSON contains errors, JSON ERROR: ". json_last_error();
-        }
-        return $json;
-    }
 }

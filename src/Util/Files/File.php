@@ -3,10 +3,6 @@
 use SplFileInfo;
 
 class File extends SplFileInfo {
-    /**
-     * Return the number of files
-     * @return int
-     */
     public function countFiles() : int 
     {
         if ($this->isFile()) {

@@ -1,8 +1,8 @@
 <?php namespace Pauldro\Minicli\v2\Util;
 
+use Pauldro\UtilityBelt\Data\DataArray as DataArrayParent;
+
 /**
- * DataArray
- *
  * Container for Data lists
  * 
  * 
@@ -15,21 +15,12 @@
  * 
  * @property array $data Array where values are stored
  */
-class DataArray extends SimpleArray {
+class DataArray extends DataArrayParent {
     protected $data = [];
 
 /* =============================================================
     Getters
 ============================================================= */
-    public function getArray() : array
-    {
-        $data = [];
-        foreach ($this->data as $item) {
-            $data[] = $item->getArray();
-        }
-        return $data;
-    }
-
     /**
      * Return new/blank item of the type that this DataArray holds
      * @return Data
@@ -46,23 +37,5 @@ class DataArray extends SimpleArray {
     public function makeBlankItem() : Data
     {
         return $this->newItem();
-    }
-
-    /**
-     * Return all the values for a fieldname
-     * @param  string $name
-     * @return array
-     */
-    public function fieldValues(string $name) : array
-    {
-        $values = [];
-
-        foreach ($this as $item) {
-            if ($item->has($name) === false) {
-                continue;
-            }
-            $values[] = $item->get($name);
-        }
-        return $values;
     }
 }
