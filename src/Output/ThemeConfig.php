@@ -1,7 +1,8 @@
 <?php namespace Pauldro\Minicli\v2\Output;
 // Minicli
 use Minicli\Output\ThemeStyle;
-use Pauldro\Minicli\v2\Util\DataArray;
+// Pauldro
+use Pauldro\UtilityBelt\Data\DataArray;
 
 class ThemeConfig extends DataArray {
     public function __construct(array $list) {

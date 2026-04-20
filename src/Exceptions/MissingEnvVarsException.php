@@ -1,18 +1,10 @@
 <?php namespace Pauldro\Minicli\v2\Exceptions;
-// Base PHP
-use Exception;
 // Dotenv
 use Dotenv\Exception\ValidationException;
+// Pauldro
+use Pauldro\UtilityBelt\Exceptions\MissingEnvVarsException as ParentException;
 
-class MissingEnvVarsException extends Exception {
-    private $vars = [];
-    private $filepath = '';
-
-    public function setVars(array $vars) : void 
-    {
-        $this->vars = $vars;
-    }
-
+class MissingEnvVarsException extends ParentException {
     /**
      * Parse Missing Variables
      * @param  ValidationException $e
@@ -30,29 +22,5 @@ class MissingEnvVarsException extends Exception {
             $vars[] = $var;
         }
         $this->vars = $vars;
-    }
-
-    /**
-     * Set .env filepath
-     * @param  string $filepath
-     * @return void
-     */
-    public function setFilepath($filepath) : void 
-    {
-        $this->filepath = $filepath;
-    }
-
-    /**
-     * Generate Error Message
-     * @return void
-     */
-    public function generateMessage() : void
-    {
-        $msg = '.env missing variables: ' . implode(", ", $this->vars);
-
-        if ($this->filepath) {
-            $msg .= " (.env file: $this->filepath)";
-        }
-        $this->message = $msg;
     }
 }

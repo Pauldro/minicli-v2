@@ -6,9 +6,9 @@ use Dotenv\Exception\ValidationException;
 // Minicli
 use Minicli\App;
 use Minicli\ServiceInterface;
-// Pauldro Minicli
+// Pauldro
 use Pauldro\Minicli\v2\Exceptions\MissingEnvVarsException;
-use Pauldro\Minicli\v2\Util\EnvVarsReader as EnvVars;
+use Pauldro\UtilityBelt\SuperGlobals\EnvVarsReader as EnvVars;
 
 /**
  * Wrapper for Dotenv for environment variables for the main .env file
