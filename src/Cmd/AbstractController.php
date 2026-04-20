@@ -10,6 +10,7 @@ use Minicli\Exception\MissingParametersException;
 use Pauldro\Minicli\v2\App\App;
 use Pauldro\Minicli\v2\Logging\Logger;
 use Pauldro\Minicli\v2\Output\OutputHandler as Printer;
+use Pauldro\Minicli\v2\Util\Timer;
 use Pauldro\UtilityBelt\Strings;
 
 /**
@@ -28,6 +29,13 @@ abstract class AbstractController extends CommandController {
 
     protected Printer $printer;
     protected Logger $log;
+
+    protected Timer $timer;
+
+    public function __construct()
+    {
+        $this->timer = new Timer();
+    }
 
 /* =============================================================
     Init Functions
