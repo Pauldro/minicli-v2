@@ -7,6 +7,6 @@ use Pauldro\UtilityBelt\Data\SimpleArray as SimpleArrayParent;
  *
  * @property array $data Array where values are stored
  */
-class SimpleArray implements SimpleArrayParent {
+class SimpleArray extends SimpleArrayParent {
     protected $data = [];
 }
