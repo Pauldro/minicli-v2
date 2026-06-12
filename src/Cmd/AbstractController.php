@@ -136,7 +136,7 @@ abstract class AbstractController extends CommandController {
             return true;
         }
         $cmd  = Logger::sanitizeCmdForLog($this->input, static::SENSITIVE_PARAMS);
-        $this->log->info($cmd);
+        $this->log->command($cmd);
         return true;
     }
 
