@@ -56,9 +56,19 @@ class Logger implements ServiceInterface {
      * @param  array<mixed> $context
      * @return void
      */
+    public function command(string $message, array $context = []) : void
+    {
+        $this->log($message, $context, LogFile::Command);
+    }
+
+    /**
+     * @param  string $message
+     * @param  array<mixed> $context
+     * @return void
+     */
     public function info(string $message, array $context = []) : void
     {
-        $this->log($message, $context, LogFile::INFO);
+        $this->log($message, $context, LogFile::Info);
     }
 
     /**
@@ -68,7 +78,7 @@ class Logger implements ServiceInterface {
      */
     public function warning(string $message, array $context = []) : void
     {
-        $this->log($message, $context, LogFile::WARNING);
+        $this->log($message, $context, LogFile::Warning);
     }
 
     /**
@@ -78,7 +88,7 @@ class Logger implements ServiceInterface {
      */
     public function error(string $message, array $context = []) : void
     {
-        $this->log($message, $context, LogFile::ERROR);
+        $this->log($message, $context, LogFile::Error);
     }
 
     /**
@@ -88,7 +98,7 @@ class Logger implements ServiceInterface {
      */
     public function debug(string $message, array $context = []) : void
     {
-        $this->log($message, $context, LogFile::DEBUG);
+        $this->log($message, $context, LogFile::Debug);
     }
 
     /**
@@ -97,7 +107,7 @@ class Logger implements ServiceInterface {
      * @param  LogFileInterface|null $file
      * @return void
      */
-    public function log(string $message, array $context = [], LogFileInterface $file = null) : void
+    public function log(string $message, array $context = [], ?LogFileInterface $file = null) : void
     {
 
        $this->addToLog(sprintf(

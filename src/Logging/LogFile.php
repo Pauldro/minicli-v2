@@ -2,8 +2,9 @@
 
 enum LogFile : string implements LogFileInterface 
 {
-    case INFO = 'info';
-    case WARNING = 'warning';
-    case ERROR = 'error';
-    case DEBUG = 'debug';
+    case Command = 'command';
+    case Debug = 'debug';
+    case Error = 'error';
+    case Info = 'info';
+    case Warning = 'warning';
 }
