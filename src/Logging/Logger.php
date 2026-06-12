@@ -11,6 +11,7 @@ use Pauldro\Minicli\v2\Cmd\CommandCall;
  */
 class Logger implements ServiceInterface {
     protected const DEFAULT_TIMESTAMP_FORMAT = 'Y-m-d H:i:s';
+    protected const LOG_COLUMN_DELIMITER = "\t";
 
     protected string $logsPath;
     protected LogFileType $logFileType;
@@ -109,12 +110,13 @@ class Logger implements ServiceInterface {
      */
     public function log(string $message, array $context = [], ?LogFileInterface $file = null) : void
     {
+        $delimiter = static::LOG_COLUMN_DELIMITER;
 
-       $this->addToLog(sprintf(
-            "[%s] %s%s\n",
+        $this->addToLog(sprintf(
+            "[%s]$delimiter%s$delimiter%s\n",
             date($this->timestampFormat),
             $message,
-            [] === $context ? '' : ' - '.json_encode($context)
+            [] === $context ? '' : json_encode($context)
         ), $file);
     }
 
