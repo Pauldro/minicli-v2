@@ -27,11 +27,11 @@ abstract class AbstractController extends CommandController {
     const OPTIONS_DEFINITIONS_OVERRIDE = [];
     const REQUIRED_PARAMS = [];
     const SENSITIVE_PARAMS = [];
+    /**  @var array<string,string>*/
     const REQUIRED_ENV_VARS = [];
 
     protected Printer $printer;
     protected Logger $log;
-
     protected Timer $timer;
 
     public function __construct()
@@ -112,9 +112,8 @@ abstract class AbstractController extends CommandController {
 
     protected function initRequiredEnvVars() : bool 
     {
-        foreach (static::REQUIRED_ENV_VARS as $var) {
+        foreach (static::REQUIRED_ENV_VARS as $var => $description) {
             if (EnvVars::exists($var) === false) {
-                $description = static::REQUIRED_ENV_VARS[$var];
                 return $this->error("Missing .env variable: $var - $description");
             }
         }

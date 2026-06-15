@@ -23,6 +23,8 @@ abstract class AbstractController extends ParentController {
     const NOTES = [];
     const INTRO_DELIMITER = '/////////////////////////////////////////////////////////';
     const REQUIRED_PARAMS = [];
+    /**  @var array<string,string>*/
+    const REQUIRED_ENV_VARS = [];
 
 /* =============================================================
     Minicli Controller Contracts
@@ -54,6 +56,7 @@ abstract class AbstractController extends ParentController {
         $this->displayUsage();
         $this->displayOptions();
         $this->displayRequiredParams();
+        $this->displayRequiredEnvVars();
         $this->displayHelp();
         $this->displaySubcommands();
         $this->displayNotes();
@@ -88,6 +91,23 @@ abstract class AbstractController extends ParentController {
 
         foreach (static::OPTIONS as $option => $example) {
             $printer->line(sprintf('%s%s%s', $printer->spaces(2), Strings::pad($example, $optLength), $this->getOptDefinition($option)));
+        }
+        return;
+    }
+
+    protected function displayRequiredEnvVars() : void
+    {
+        if (empty(static::REQUIRED_ENV_VARS)) {
+            return;
+        }
+
+        $printer = $this->printer;
+        $optLength = Strings::longestStrlen(array_keys(static::REQUIRED_ENV_VARS));
+        $printer->info('Required .env variable:');
+
+        foreach (static::REQUIRED_ENV_VARS as $var => $description) {
+            $example = Strings::pad($var, $optLength);
+            $printer->line(sprintf('%s%s%s', $printer->spaces(2), $example, $description));
         }
         return;
     }
@@ -170,7 +190,7 @@ abstract class AbstractController extends ParentController {
 
     /**
      * Display Subcommand
-     * @return bool
+     * @return void
      */
     protected function displaySubcommand() : void
     {
