@@ -12,6 +12,7 @@ use Pauldro\Minicli\v2\Logging\Logger;
 use Pauldro\Minicli\v2\Output\OutputHandler as Printer;
 use Pauldro\Minicli\v2\Util\Timer;
 use Pauldro\UtilityBelt\Strings;
+use Pauldro\UtilityBelt\SuperGlobals\EnvVarsReader as EnvVars;
 
 /**
  * Template for Handling and Executing Commands
@@ -26,6 +27,7 @@ abstract class AbstractController extends CommandController {
     const OPTIONS_DEFINITIONS_OVERRIDE = [];
     const REQUIRED_PARAMS = [];
     const SENSITIVE_PARAMS = [];
+    const REQUIRED_ENV_VARS = [];
 
     protected Printer $printer;
     protected Logger $log;
@@ -73,7 +75,6 @@ abstract class AbstractController extends CommandController {
 
     /**
      * The list of parameters required by the command.
-     *
      * @return array<int, string>
      */
     public function required() : array
@@ -89,6 +90,9 @@ abstract class AbstractController extends CommandController {
     {
         $this->initEnvTimeZone();
 
+        if ($this->initRequiredEnvVars() === false) {
+            return false;
+        }
         if ($this->initRequiredParams() === false) {
             return false;
         }
@@ -104,6 +108,17 @@ abstract class AbstractController extends CommandController {
         $sysTZ = exec('date +%Z');
         $abbr = timezone_name_from_abbr($sysTZ);
         return date_default_timezone_set($abbr);
+    }
+
+    protected function initRequiredEnvVars() : bool 
+    {
+        foreach (static::REQUIRED_ENV_VARS as $var) {
+            if (EnvVars::exists($var) === false) {
+                $description = static::REQUIRED_ENV_VARS[$var];
+                return $this->error("Missing .env variable: $var - $description");
+            }
+        }
+        return true;
     }
 
     /**
@@ -144,7 +159,7 @@ abstract class AbstractController extends CommandController {
      * Log Command sent to App
      * @return bool
      */
-    protected function logError($msg) : bool
+    protected function logError(string $msg) : bool
     {
         if (array_key_exists('LOG.ERRORS', $_ENV) === false || $_ENV['LOG.ERRORS'] == 'false') {
             return true;
@@ -159,7 +174,8 @@ abstract class AbstractController extends CommandController {
      * @param  string $msg
      * @return false
      */
-    protected function error($msg) : bool {
+    protected function error($msg) : bool
+    {
         $this->printer->error($msg);
         $this->logError($msg);
         return false;
