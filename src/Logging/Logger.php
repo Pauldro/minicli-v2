@@ -12,6 +12,13 @@ use Pauldro\Minicli\v2\Cmd\CommandCall;
 class Logger implements ServiceInterface {
     protected const DEFAULT_TIMESTAMP_FORMAT = 'Y-m-d H:i:s';
     protected const LOG_COLUMN_DELIMITER = "\t";
+    public const LOG_FILES = [
+        'command' => LogFile::Command,
+        'debug'   => LogFile::Debug,
+        'error'   => LogFile::Error,
+        'info'    => LogFile::Info,
+        'warning' => LogFile::Warning,
+    ];
 
     protected string $logsPath;
     protected LogFileType $logFileType;
@@ -205,7 +212,8 @@ class Logger implements ServiceInterface {
      * @param  bool    $adaptive
      * @return string
      */
-    protected function tailLog(string $filepath, $adaptive = true) : string {
+    protected function tailLog(string $filepath, $adaptive = true) : string
+    {
         $lines = 1;
 
         // Open file
