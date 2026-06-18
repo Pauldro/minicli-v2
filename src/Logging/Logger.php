@@ -56,7 +56,7 @@ class Logger implements ServiceInterface {
         };
     }
 
-    protected function logFileExists(LogFileInterface $file) : bool
+    public function logFileExists(LogFileInterface $file) : bool
     {
         return file_exists($this->getLogFilePath($file));
     }
