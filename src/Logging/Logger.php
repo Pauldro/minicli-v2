@@ -56,6 +56,11 @@ class Logger implements ServiceInterface {
         };
     }
 
+    protected function logFileExists(LogFileInterface $file) : bool
+    {
+        return file_exists($this->getLogFilePath($file));
+    }
+
 /* =============================================================
     Logging Functions
 ============================================================= */
@@ -181,7 +186,6 @@ class Logger implements ServiceInterface {
         }
         copy($logFilepath, $archiveFilepath);
         if (file_exists($archiveFilepath) === false) {
-            echo $archiveFilepath , "does not exist " . PHP_EOL;
             return false;
         }
         file_put_contents($logFilepath, '');
