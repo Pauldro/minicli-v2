@@ -132,6 +132,11 @@ class Logger implements ServiceInterface {
         ), $file);
     }
 
+    public function logSimple(string $message, ?LogFileInterface $file = null) : void
+    {
+        $this->addToLog($message . "\n", $file);
+    }
+
     /**
      * Add Message to Log
      * @param  string $message
