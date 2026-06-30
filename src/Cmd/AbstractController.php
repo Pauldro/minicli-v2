@@ -25,10 +25,20 @@ abstract class AbstractController extends CommandController {
     const NOTES = [];
     const OPTIONS_DEFINITIONS = [];
     const OPTIONS_DEFINITIONS_OVERRIDE = [];
+    const OPTIONS_SKIP = [];
     const REQUIRED_PARAMS = [];
     const SENSITIVE_PARAMS = [];
-    /**  @var array<string,string>*/
+    /**  @var array<string,string> */
     const REQUIRED_ENV_VARS = [];
+    const REQUIRED_PARAM_OR_GROUPS = [
+        // 'credentials' => [
+        //     'description' => 'FTP Credentials',
+        //     'groups' => [
+        //         'env-file' => ['env-ftp-credentials'],
+        //         'params'   => ['server', 'login', 'password', 'port', '--use-ssl']
+        //     ]
+        // ]
+    ];
 
     protected Printer $printer;
     protected Logger $log;
@@ -59,7 +69,7 @@ abstract class AbstractController extends CommandController {
 
     /**
      * Setup controller
-     * @param  App $app
+     * @param  App         $app
      * @param  CommandCall $input
      * @return void
      */
@@ -112,6 +122,10 @@ abstract class AbstractController extends CommandController {
         return date_default_timezone_set($abbr);
     }
 
+    /**
+     * Initialize php error logging, display of errors
+     * @return bool
+     */
     protected function initIniDebug() : bool
     {
         if ($this->app->config->debug === false && $this->input->hasFlag('--debug') === false) {
