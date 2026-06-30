@@ -54,10 +54,11 @@ abstract class AbstractController extends ParentController {
     protected function display() : void
     {
         $this->displayUsage();
+        $this->displayDescription();
+        $this->displayRequiredEnvVars();
         $this->displayOptions();
         $this->displayRequiredParams();
-        $this->displayRequiredEnvVars();
-        $this->displayHelp();
+        $this->displayRequiredParamOrGroups();
         $this->displaySubcommands();
         $this->displayNotes();
 
@@ -90,6 +91,9 @@ abstract class AbstractController extends ParentController {
         $printer->line($printer->style('Options:', 'info_header'));
 
         foreach (static::OPTIONS as $option => $example) {
+            if (in_array($option, static::OPTIONS_SKIP)) {
+                continue;
+            }
             $printer->line(sprintf('%s%s%s', $printer->spaces(2), Strings::pad($example, $optLength), $this->getOptDefinition($option)));
         }
         return;
@@ -139,13 +143,46 @@ abstract class AbstractController extends ParentController {
     }
 
     /**
-     * Display Command Help
+     * Display Params that are required if others are not present
      * @return void
      */
-    protected function displayHelp() : void
+    protected function displayRequiredParamOrGroups() : void
+    {
+        if (empty(static::REQUIRED_PARAM_OR_GROUPS)) {
+            return;
+        }
+
+        $printer = $this->printer;
+        $printer->line($printer->style('Required:', 'info_header'));
+
+        foreach (static::REQUIRED_PARAM_OR_GROUPS as $key => $rule) {
+            $printer->line($printer->style($printer->spaces(2) . $rule['description'], 'bold'));
+            $i = 1;
+            $indent = $printer->spaces(4);
+
+            foreach ($rule['groups'] as $groupid  => $group) {
+                foreach ($group as $option) {
+                    $example = static::OPTIONS[$option];
+                    $printer->line(sprintf('%s%s', $printer->spaces(4), $example));
+                }
+                if ($i < sizeof($rule['groups'])) {
+                    $printer->info($indent . "*** OR ***");
+                    $printer->newline();
+                }
+                $i++;
+            }
+        }
+        return;
+    }
+
+    /**
+     * Display Command Description
+     * @return void
+     */
+    protected function displayDescription() : void
     {
         $printer = $this->printer;
-        $printer->line($printer->style('Help:', 'info_header'));
+        $printer->line($printer->style('Description:', 'info_header'));
         $printer->line(sprintf('%s%s', $printer->spaces(2), static::DESCRIPTION));
         return;
     }
