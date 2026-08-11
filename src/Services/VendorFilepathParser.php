@@ -27,7 +27,6 @@ class VendorFilepathParser implements ServiceInterface
 
     /**
      * Parse vendor path
-     * @param string $path
      */
     public function parse(string $path)
     {

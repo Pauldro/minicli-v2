@@ -24,9 +24,7 @@ class Env implements ServiceInterface
 
     /**
      * load
-     * @param  App  $app
      * @throws Exception
-     * @return void
      */
     public function load(App $app): void
     {
@@ -34,7 +32,7 @@ class Env implements ServiceInterface
         try {
             $dotenv = Dotenv::createImmutable($this->dir);
             $dotenv->load();
-        } catch (Exception $e) {
+        } catch (Exception) {
             throw new Exception('Unable to load app .env');
         }
         $this->filepath = $this->dir . '.env';
@@ -44,9 +42,7 @@ class Env implements ServiceInterface
 
     /**
      * Return if required variables are set
-     * @param  array $vars
      * @throws MissingEnvVarsException
-     * @return bool
      */
     public function required(array $vars): bool
     {
@@ -64,14 +60,11 @@ class Env implements ServiceInterface
 
     /**
      * Return if required variables are set
-     * @param  array  $vars
-     * @param  string $prefix
      * @throws MissingEnvVarsException
-     * @return bool
      */
     public function requiredPrefixed(array $vars, string $prefix = ''): bool
     {
-        if (empty($prefix)) {
+        if ($prefix === '' || $prefix === '0') {
             return $this->required($vars);
         }
         $newVars = [];
@@ -84,14 +77,12 @@ class Env implements ServiceInterface
 
     /**
      * Return if variable is set
-     * @param  string $var
-     * @return bool
      */
     public function exists(string $var): bool
     {
         try {
             $this->env->required($var);
-        } catch (Exception $e) {
+        } catch (Exception) {
             return false;
         }
         return true;
@@ -99,8 +90,6 @@ class Env implements ServiceInterface
 
     /**
      * Return value
-     * @param  string $var
-     * @return string
      */
     public function get(string $var): string
     {
@@ -112,8 +101,6 @@ class Env implements ServiceInterface
 
     /**
      * Return value as a boolean
-     * @param  string $var
-     * @return bool
      */
     public function getBool(string $var): bool
     {

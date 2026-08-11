@@ -53,16 +53,16 @@ abstract class AbstractController extends CommandController
     }
 
     /* =============================================================
-        Init Functions
-    ============================================================= */
+           Init Functions
+       ============================================================= */
     /**
-    * Called before `run`
-    *
-    * @param  App $app
-    * @param  CommandCall $input
-    * @return void
-    * @throws MissingParametersException
-    */
+     * Called before `run`
+     *
+     * @param  App $app
+     * @param  CommandCall $input
+     * @throws MissingParametersException
+     */
+    #[\Override]
     public function boot(MinicliApp $app, MinicliCommandCall $input): void
     {
         parent::boot($app, $input);
@@ -74,7 +74,6 @@ abstract class AbstractController extends CommandController
      * Setup controller
      * @param  App         $app
      * @param  CommandCall $input
-     * @return void
      */
     public function bootstrap(MinicliApp $app, MinicliCommandCall $input): void
     {
@@ -90,6 +89,7 @@ abstract class AbstractController extends CommandController
      * The list of parameters required by the command.
      * @return array<int, string>
      */
+    #[\Override]
     public function required(): array
     {
         return static::REQUIRED_PARAMS;
@@ -97,7 +97,6 @@ abstract class AbstractController extends CommandController
 
     /**
      * Initialize App
-     * @return bool
      */
     protected function init(): bool
     {
@@ -108,15 +107,11 @@ abstract class AbstractController extends CommandController
         if ($this->initRequiredEnvVars() === false) {
             return false;
         }
-        if ($this->initRequiredParams() === false) {
-            return false;
-        }
-        return true;
+        return $this->initRequiredParams();
     }
 
     /**
      * Initialize the Local Time Zone
-     * @return bool
      */
     protected function initEnvTimeZone(): bool
     {
@@ -127,7 +122,6 @@ abstract class AbstractController extends CommandController
 
     /**
      * Initialize php error logging, display of errors
-     * @return bool
      */
     protected function initIniDebug(): bool
     {
@@ -152,7 +146,6 @@ abstract class AbstractController extends CommandController
 
     /**
      * Initialize App
-     * @return bool
      */
     protected function initRequiredParams(): bool
     {
@@ -167,12 +160,11 @@ abstract class AbstractController extends CommandController
     }
 
     /* =============================================================
-        Logging Functions
-    ============================================================= */
+           Logging Functions
+       ============================================================= */
     /**
      * Log Command sent to App
      * NOTE: Keep public so App can call it
-     * @return bool
      */
     public function logCommand(): bool
     {
@@ -186,7 +178,6 @@ abstract class AbstractController extends CommandController
 
     /**
      * Log Command sent to App
-     * @return bool
      */
     protected function logError(string $msg): bool
     {
@@ -211,12 +202,11 @@ abstract class AbstractController extends CommandController
     }
 
     /* =============================================================
-        Parameter Functions
-    ============================================================= */
+           Parameter Functions
+       ============================================================= */
     /**
      * Return boolean value for parameter
      * @param  string $param Parameter to get Value from
-     * @return bool
      */
     protected function getParamBool($param): bool
     {
@@ -228,6 +218,7 @@ abstract class AbstractController extends CommandController
      * @param  string $param
      * @return string
      */
+    #[\Override]
     protected function getParam($param): string|null
     {
         return $this->input->getParam($param);
@@ -237,7 +228,6 @@ abstract class AbstractController extends CommandController
      * Return Parameter Value as array
      * @param  string $param	  Parameter Key
      * @param  string $delimiter  Delimiter
-     * @return array
      */
     protected function getParamArray($param, $delimiter = ','): array
     {
@@ -245,12 +235,10 @@ abstract class AbstractController extends CommandController
     }
 
     /* =============================================================
-        Displays
-    ============================================================= */
+           Displays
+       ============================================================= */
     /**
      * Display Key Value Data
-     * @param  array $data
-     * @return void
      */
     protected function displayDictionary(array $data): void
     {
@@ -268,13 +256,12 @@ abstract class AbstractController extends CommandController
     }
 
     /* =============================================================
-        Supplemental
-    ============================================================= */
+           Supplemental
+       ============================================================= */
     /**
-     * @param string $name
      * @param array<int,mixed> $arguments
-     * @return mixed
      */
+    #[\Override]
     public function __call(string $name, array $arguments): mixed
     {
         if (method_exists($this->printer, $name)) {

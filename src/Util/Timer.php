@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Pauldro\Minicli\v2\Util;
 
 class Timer
@@ -36,7 +39,7 @@ class Timer
             }
             $parts[] = $value . $unit;
         }
-        if (empty($parts)) {
+        if ($parts === []) {
             return '0s';
         }
         return implode(' ', $parts);

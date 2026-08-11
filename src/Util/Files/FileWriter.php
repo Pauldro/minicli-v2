@@ -15,6 +15,7 @@ class FileWriter extends FileWriterParent
     public $errorMsg;
     public $lastWrittenFile;
 
+    #[\Override]
     public static function instance(): FileWriter
     {
         if (empty(self::$instance)) {

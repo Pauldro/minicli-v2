@@ -12,83 +12,78 @@ use Minicli\Command\CommandCall as ParentCommandCall;
  */
 class CommandCall extends ParentCommandCall {
 
-/* =============================================================
-    Public
-============================================================= */
+    /* =============================================================
+        Public
+    ============================================================= */
     /**
      * Return Last Argument sent
-     * @return string
      */
-    public function lastArg() : string
+    public function lastArg(): string
     {
-        $i = (sizeof($this->args) - 1);
+        $i = (count($this->args) - 1);
         return array_key_exists($i, $this->args) ? $this->args[$i] : '';
     }
 
     /**
      * Return boolean value for parameter
      * @param  string $param Parameter to get Value from
-     * @return bool
      */
-    public function getParamBool(string $param) : bool
+    public function getParamBool(string $param): bool
     {
         $value = $this->getParam($param);
-        if (empty($value)) {
+        if (in_array($value, [null, '', '0'], true)) {
             return false;
         }
-        return strtolower($value) == 'y' || strtolower($value) == 'true';
+        return strtolower($value) === 'y' || strtolower($value) === 'true';
     }
 
     /**
      * Return Parameter Value as array
      * @param  string $param      Parameter Key
      * @param  string $delimiter  Delimiter
-     * @return array
      */
-    public function getParamArray(string $param, string $delimiter = ",") : array
+    public function getParamArray(string $param, string $delimiter = ","): array
     {
         return explode($delimiter, $this->getParam($param));
     }
 
     /**
      * Return Param value as integer
-     * @param  string $param
-     * @return int
      */
-    public function getParamInt(string $param) : int
+    public function getParamInt(string $param): int
     {
         return intval($this->getParam($param));
     }
 
     public function getParamString(string $param): string
     {
-        return (string)$this->getParam($param)
+        return (string)$this->getParam($param);
     }
 
-/* =============================================================
-    Internal
-============================================================= */
+    /* =============================================================
+        Internal
+    ============================================================= */
     /**
      * Parse Command Input
      * @param  array $argv Input
-     * @return void
      */
-    protected function parseCommand(array $argv) : void
+    #[\Override]
+    protected function parseCommand(array $argv): void
     {
         foreach ($argv as $arg) {
             $pair = explode('=', $arg, 2);
 
-            if (count($pair) == 2) {
+            if (count($pair) === 2) {
                 $this->params[$pair[0]] = $pair[1];
                 continue;
             }
 
-            if (substr($arg, 0, 2) == '--') {
+            if (str_starts_with($arg, '--')) {
                 $this->flags[] = $arg;
                 continue;
             }
 
-            if (substr($arg, 0, 1) == '-') {
+            if (str_starts_with($arg, '-')) {
                 $this->flags[] = $arg;
                 continue;
             }

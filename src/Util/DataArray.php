@@ -21,12 +21,12 @@ class DataArray extends DataArrayParent
     protected $data = [];
 
     /* =============================================================
-        Getters
-    ============================================================= */
+           Getters
+       ============================================================= */
     /**
      * Return new/blank item of the type that this DataArray holds
-     * @return Data
      */
+    #[\Override]
     public function newItem(): Data
     {
         return new Data();
@@ -34,7 +34,6 @@ class DataArray extends DataArrayParent
 
     /**
      * Return new/blank item of the type that this DataArray holds
-     * @return Data
      */
     public function makeBlankItem(): Data
     {

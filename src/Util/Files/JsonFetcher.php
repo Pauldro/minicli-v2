@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Pauldro\Minicli\v2\Util\Files;
 
 use Pauldro\UtilityBelt\Files\JsonFetcher as JsonFetcherParent;

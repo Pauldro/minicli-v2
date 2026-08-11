@@ -12,10 +12,8 @@ class CommandNamespace extends MinicliCommandNamespace
      * load command map
      *
      * NOTE: skips abstract classes
-     *
-     * @param string $controllerFile
-     * @return void
      */
+    #[\Override]
     protected function loadCommandMap(string $controllerFile): void
     {
         $filename = basename($controllerFile);
@@ -37,16 +35,14 @@ class CommandNamespace extends MinicliCommandNamespace
 
     /**
      * get namespace
-     *
-     * @param string $filename
-     * @return string
      */
+    #[\Override]
     protected function getNamespace(string $filename): string
     {
         $file = (array) file($filename);
         $lines = (array) preg_grep('/^namespace /', $file);
 
-        if (empty($lines)) { // Try loading lines that namespace is on the same line as php
+        if ($lines === []) { // Try loading lines that namespace is on the same line as php
             $found = (array) preg_grep('/^\<\?php namespace /', $file);
             $lines = [];
             foreach ($found as $key => $line) {

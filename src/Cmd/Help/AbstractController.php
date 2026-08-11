@@ -41,17 +41,17 @@ abstract class AbstractController extends ParentController
      *
      * @return array<int, string>
      */
+    #[\Override]
     public function required(): array
     {
         return [];
     }
 
     /* =============================================================
-        Display Printing
-    ============================================================= */
+           Display Printing
+       ============================================================= */
     /**
      * Display Command
-     * @return void
      */
     protected function display(): void
     {
@@ -70,7 +70,6 @@ abstract class AbstractController extends ParentController
 
     /**
      * Display Command Usage
-     * @return void
      */
     protected function displayUsage(): void
     {
@@ -79,12 +78,10 @@ abstract class AbstractController extends ParentController
         $script = $this->app->getSignature();
         $printer->line(sprintf('%s%s%s', $printer->style($script, 'italic'), $printer->spaces(1), $printer->style(static::COMMAND, 'info') . ' [options]'));
         $printer->newline();
-        return;
     }
 
     /**
      * Display Command Options
-     * @return void
      */
     protected function displayOptions(): void
     {
@@ -98,12 +95,11 @@ abstract class AbstractController extends ParentController
             }
             $printer->line(sprintf('%s%s%s', $printer->spaces(2), Strings::pad($example, $optLength), $this->getOptDefinition($option)));
         }
-        return;
     }
 
     protected function displayRequiredEnvVars(): void
     {
-        if (empty(static::REQUIRED_ENV_VARS)) {
+        if (static::REQUIRED_ENV_VARS === []) {
             return;
         }
 
@@ -115,12 +111,10 @@ abstract class AbstractController extends ParentController
             $example = Strings::pad($var, $optLength);
             $printer->line(sprintf('%s%s%s', $printer->spaces(2), $example, $description));
         }
-        return;
     }
 
     /**
      * Display Required Command Parameters
-     * @return void
      */
     protected function displayRequiredParams(): void
     {
@@ -141,12 +135,10 @@ abstract class AbstractController extends ParentController
             $description = $this->getOptDefinition($option);
             $printer->line(sprintf('%s%s%s', $printer->spaces(2), $example, $description));
         }
-        return;
     }
 
     /**
      * Display Params that are required if others are not present
-     * @return void
      */
     protected function displayRequiredParamOrGroups(): void
     {
@@ -157,41 +149,37 @@ abstract class AbstractController extends ParentController
         $printer = $this->printer;
         $printer->line($printer->style('Required:', 'info_header'));
 
-        foreach (static::REQUIRED_PARAM_OR_GROUPS as $key => $rule) {
+        foreach (static::REQUIRED_PARAM_OR_GROUPS as $rule) {
             $printer->line($printer->style($printer->spaces(2) . $rule['description'], 'bold'));
             $i = 1;
             $indent = $printer->spaces(4);
 
-            foreach ($rule['groups'] as $groupid => $group) {
+            foreach ($rule['groups'] as $group) {
                 foreach ($group as $option) {
                     $example = static::OPTIONS[$option];
                     $printer->line(sprintf('%s%s', $printer->spaces(4), $example));
                 }
-                if ($i < sizeof($rule['groups'])) {
+                if ($i < count($rule['groups'])) {
                     $printer->info($indent . '*** OR ***');
                     $printer->newline();
                 }
                 $i++;
             }
         }
-        return;
     }
 
     /**
      * Display Command Description
-     * @return void
      */
     protected function displayDescription(): void
     {
         $printer = $this->printer;
         $printer->line($printer->style('Description:', 'info_header'));
         $printer->line(sprintf('%s%s', $printer->spaces(2), static::DESCRIPTION));
-        return;
     }
 
     /**
      * Display Notes
-     * @return void
      */
     protected function displayNotes(): void
     {
@@ -204,12 +192,10 @@ abstract class AbstractController extends ParentController
         foreach (static::NOTES as $line) {
             $printer->line(sprintf('%s%s%s', $printer->spaces(2), ' ', $line));
         }
-        return;
     }
 
     /**
      * Display Subcommands
-     * @return void
      */
     protected function displaySubcommands(): void
     {
@@ -223,12 +209,10 @@ abstract class AbstractController extends ParentController
         foreach (static::SUBCOMMANDS as $cmd) {
             $printer->line(sprintf('%s%s%s%s%s', $printer->spaces(2), 'help ', static::COMMAND, ' ', $cmd));
         }
-        return;
     }
 
     /**
      * Display Subcommand
-     * @return void
      */
     protected function displaySubcommand(): void
     {
@@ -241,15 +225,13 @@ abstract class AbstractController extends ParentController
         }
         $handler->boot($this->app, $this->input);
         $handler->handle();
-        return;
     }
 
     /* =============================================================
-        Supplemental
-    ============================================================= */
+           Supplemental
+       ============================================================= */
     /**
      * Return String Length of Longest Command
-     * @return int
      */
     protected function getLongestOptLength(): int
     {
@@ -258,7 +240,6 @@ abstract class AbstractController extends ParentController
 
     /**
      * Return String Length of Longest Command
-     * @return int
      */
     protected function getLongestOptExampleLength(): int
     {
@@ -268,7 +249,6 @@ abstract class AbstractController extends ParentController
     /**
      * Return Argument Defination
      * @param  string $opt Option, Argument (param|flag)
-     * @return string
      */
     protected function getOptDefinition($opt): string
     {
@@ -283,7 +263,7 @@ abstract class AbstractController extends ParentController
 
     protected function getSubcommandController(string $command, string $subcommand): ParentController|false
     {
-        $reflector = new ReflectionClass(get_class($this));
+        $reflector = new ReflectionClass(static::class);
         $ns = $reflector->getNamespaceName() . '\\' . ucfirst($command) . '\\';
         $class = $ns . ucfirst($subcommand) . 'Controller';
 

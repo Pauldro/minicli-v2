@@ -33,7 +33,7 @@ class CliTheme extends DefaultTheme
         $this->config = MinicliThemeConfig::make(...$formatted);
         $formatted = [];
 
-        $styles = array_merge($this->getDefaultColors(), $this->getThemeColors());
+        array_merge($this->getDefaultColors(), $this->getThemeColors());
 
         foreach ($this->getExtraThemeColors() as $name => $style) {
             $formatted[$name] = ThemeStyle::make(...$style);
@@ -43,16 +43,11 @@ class CliTheme extends DefaultTheme
 
     /**
      * Obtains the colors that compose a style for that theme, such as "error" or "success"
-     *
-     * @param string $name
-     * @return ThemeStyle
      */
+    #[\Override]
     public function getStyle(string $name): ThemeStyle
     {
-        if (isset($this->config->$name)) {
-            return $this->config->$name;
-        }
-        return $this->extraStyles->has($name) ? $this->extraStyles->get($name) : $this->config->default;
+        return $this->config->$name ?? ($this->extraStyles->has($name) ? $this->extraStyles->get($name) : $this->config->default);
     }
 
     /**
@@ -60,6 +55,7 @@ class CliTheme extends DefaultTheme
      *
      * @return array<string, array<int, string>>
      */
+    #[\Override]
     public function getThemeColors(): array
     {
         return [

@@ -13,7 +13,6 @@ class OutputHandler extends MinicliOutputHandler
     /**
      * Return spaces
      * @param  int   $spaces
-     * @return string
      */
     public function spaces($spaces = 0): string
     {
@@ -24,7 +23,6 @@ class OutputHandler extends MinicliOutputHandler
      * Displays content using the "default" style
      * @param  string $content
      * @param  bool $alt Whether or not to use the inverted style ("alt")
-     * @return void
      */
     public function line($content, $alt = false): void
     {
@@ -36,7 +34,6 @@ class OutputHandler extends MinicliOutputHandler
      * Style Content
      * @param string $content
      * @param string $style
-     * @return string
      */
     public function style($content, $style): string
     {

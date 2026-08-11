@@ -18,7 +18,6 @@ class ThemeConfig extends DataArray
     /**
      * Summary of make
      * @param  ThemeStyle[] $list
-     * @return ThemeConfig
      */
     public static function make(array $list): self
     {

@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Pauldro\Minicli\v2\Exceptions;
 
 // Dotenv
@@ -10,8 +13,6 @@ class MissingEnvVarsException extends ParentException
 {
     /**
      * Parse Missing Variables
-     * @param  ValidationException $e
-     * @return void
      */
     public function parseVarsFromValidationException(ValidationException $e): void
     {

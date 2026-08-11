@@ -37,13 +37,11 @@ class Logger implements ServiceInterface
     }
 
     /* =============================================================
-        LogFilepath Functions
-    ============================================================= */
+           LogFilepath Functions
+       ============================================================= */
     /**
      * Return Path to Log File
      * @param  LogFile $file
-     * @param  string  $suffix
-     * @return string
      */
     protected function getLogFilePath(LogFileInterface $file, string $suffix = ''): string
     {
@@ -65,12 +63,10 @@ class Logger implements ServiceInterface
     }
 
     /* =============================================================
-        Logging Functions
-    ============================================================= */
+           Logging Functions
+       ============================================================= */
     /**
-     * @param  string $message
      * @param  array<mixed> $context
-     * @return void
      */
     public function command(string $message, array $context = []): void
     {
@@ -78,9 +74,7 @@ class Logger implements ServiceInterface
     }
 
     /**
-     * @param  string $message
      * @param  array<mixed> $context
-     * @return void
      */
     public function info(string $message, array $context = []): void
     {
@@ -88,9 +82,7 @@ class Logger implements ServiceInterface
     }
 
     /**
-     * @param  string $message
      * @param  array<mixed> $context
-     * @return void
      */
     public function warning(string $message, array $context = []): void
     {
@@ -98,9 +90,7 @@ class Logger implements ServiceInterface
     }
 
     /**
-     * @param string $message
      * @param array<mixed> $context
-     * @return void
      */
     public function error(string $message, array $context = []): void
     {
@@ -108,9 +98,7 @@ class Logger implements ServiceInterface
     }
 
     /**
-     * @param  string $message
      * @param  array<mixed> $context
-     * @return void
      */
     public function debug(string $message, array $context = []): void
     {
@@ -118,10 +106,7 @@ class Logger implements ServiceInterface
     }
 
     /**
-     * @param  string $message
      * @param  array<mixed> $context
-     * @param  LogFileInterface|null $file
-     * @return void
      */
     public function log(string $message, array $context = [], ?LogFileInterface $file = null): void
     {
@@ -142,9 +127,6 @@ class Logger implements ServiceInterface
 
     /**
      * Add Message to Log
-     * @param  string $message
-     * @param  LogFileInterface $file
-     * @return void
      */
     protected function addToLog(string $message, LogFileInterface $file): void
     {
@@ -163,7 +145,6 @@ class Logger implements ServiceInterface
     /**
      * Clear Log
      * @param  LogFile $file
-     * @return void
      */
     public function clearLog(LogFileInterface $file): void
     {
@@ -177,8 +158,6 @@ class Logger implements ServiceInterface
 
     /**
      * Archive Log for the last month
-     * @param  LogFileInterface $file
-     * @return bool
      */
     public function archiveLogPrevMonth(LogFileInterface $file): bool
     {
@@ -201,12 +180,11 @@ class Logger implements ServiceInterface
     }
 
     /* =============================================================
-        Log Reading Functions
-    ============================================================= */
+           Log Reading Functions
+       ============================================================= */
     /**
      * Return the Last Line of a LogFile
      * @param  LogFile $file
-     * @return string
      */
     public function getLastLogLine(LogFileInterface $file): string
     {
@@ -220,9 +198,7 @@ class Logger implements ServiceInterface
 
     /**
      * Find the Last Line of a file
-     * @param  string  $filepath
      * @param  bool    $adaptive
-     * @return string
      */
     protected function tailLog(string $filepath, $adaptive = true): string
     {
@@ -286,12 +262,11 @@ class Logger implements ServiceInterface
     }
 
     /* =============================================================
-        Log String Functions
-    ============================================================= */
+           Log String Functions
+       ============================================================= */
     /**
      * Return array formatted as string for Log delimited by \t
      * @param  array $parts
-     * @return string
      */
     public static function createLogString($parts = []): string
     {
@@ -300,7 +275,6 @@ class Logger implements ServiceInterface
 
     /**
      * Sanitize Command for Log Use
-     * @return string
      */
     public static function sanitizeCmdForLog(CommandCall $input, array $sensitiveParams): string
     {

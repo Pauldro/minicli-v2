@@ -32,6 +32,7 @@ class App extends MinicliApp
     /* =============================================================
         Inits, Boots, Loads
     ============================================================= */
+    #[\Override]
     protected function loadDefaultServices(): void
     {
         parent::loadDefaultServices();
@@ -42,6 +43,7 @@ class App extends MinicliApp
         }
     }
 
+    #[\Override]
     protected function loadServices(): void
     {
         try {
@@ -56,9 +58,9 @@ class App extends MinicliApp
 
     /**
      * @param array<string, mixed> $config
-     * @param string $signature
      * @throws BindingResolutionException|ReflectionException
      */
+    #[\Override]
     public function boot(array $config, string $signature): void
     {
         $this->loadConfig($config, $signature);
@@ -91,7 +93,6 @@ class App extends MinicliApp
 
     /**
      * Parse, Set Inis
-     * @return void
      */
     private function parseSetInis(): void
     {
@@ -114,6 +115,7 @@ class App extends MinicliApp
     /* =============================================================
         Setters
     ============================================================= */
+    #[\Override]
     public function setTheme(string $theme): void
     {
         parent::setTheme($theme);
@@ -127,13 +129,13 @@ class App extends MinicliApp
     }
 
     /* =============================================================
-        Execution
-    ============================================================= */
+           Execution
+       ============================================================= */
     /**
      * @param array<int,string> $argv
-     * @return void
      * @throws CommandNotFoundException|Throwable
      */
+    #[\Override]
     public function runCommand(array $argv = []): void
     {
         $input = new CommandCall($argv);
@@ -148,7 +150,7 @@ class App extends MinicliApp
         if (empty($controller)) {
             $cmd = $input->command;
 
-            if (strtolower($input->subcommand) != 'default') {
+            if (strtolower($input->subcommand) !== 'default') {
                 $cmd .= " $input->subcommand";
             }
             $this->error("Controller not found for $cmd");

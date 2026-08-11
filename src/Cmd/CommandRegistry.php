@@ -11,11 +11,8 @@ class CommandRegistry extends ParentCommandRegistry
 {
     /**
      * get callable controller
-     *
-     * @param string $command
-     * @param string $subcommand
-     * @return ControllerInterface|null
      */
+    #[\Override]
     public function getCallableController(string $command, string $subcommand = 'default'): ?ControllerInterface
     {
         $command = strtolower(Strings::camelCase($command));
@@ -27,11 +24,8 @@ class CommandRegistry extends ParentCommandRegistry
 
     /**
      * register namespace
-     *
-     * @param string $commandNamespace
-     * @param string $commandSource
-     * @return void
      */
+    #[\Override]
     public function registerNamespace(string $commandNamespace, string $commandSource): void
     {
         $namespace = new CommandNamespace($commandNamespace);

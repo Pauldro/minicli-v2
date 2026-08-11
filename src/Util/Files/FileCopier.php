@@ -13,6 +13,7 @@ class FileCopier extends FileCopierParent
     public string $errorMsg;
     public string $lastCopiedFile;
 
+    #[\Override]
     public static function instance(): FileCopier
     {
         if (empty(self::$instance)) {

@@ -17,12 +17,12 @@ abstract class AbstractHelpMenuController extends AbstractController
     protected $commandMap = [];
 
     /* =============================================================
-        Init Functions
-    ============================================================= */
+           Init Functions
+       ============================================================= */
     /**
      * Initialize App
-     * @return bool
      */
+    #[\Override]
     protected function init(): bool
     {
         return $this->initCommandMap();
@@ -30,7 +30,6 @@ abstract class AbstractHelpMenuController extends AbstractController
 
     /**
      * Initialize Command Map
-     * @return bool
      */
     protected function initCommandMap(): bool
     {
@@ -41,6 +40,7 @@ abstract class AbstractHelpMenuController extends AbstractController
     /* =============================================================
         Minicli Controller Contracts
     ============================================================= */
+    #[\Override]
     public function handle(): void
     {
         $this->init();
@@ -49,12 +49,12 @@ abstract class AbstractHelpMenuController extends AbstractController
     }
 
     /* =============================================================
-        Display Printing
-    ============================================================= */
+           Display Printing
+       ============================================================= */
     /**
      * Return Default Display
-     * @return void
      */
+    #[\Override]
     protected function display(): void
     {
         $printer = $this->printer;
@@ -66,7 +66,6 @@ abstract class AbstractHelpMenuController extends AbstractController
 
     /**
      * Display Commands and their Subcommands
-     * @return void
      */
     protected function displayCommands(): void
     {
@@ -94,7 +93,6 @@ abstract class AbstractHelpMenuController extends AbstractController
      * @param  int    $cmdLength
      * @param  string $command
      * @param  array  $subcommands
-     * @return void
      */
     protected function displayCommand($cmdLength, $command, $subcommands = []): void
     {
@@ -108,7 +106,6 @@ abstract class AbstractHelpMenuController extends AbstractController
             $this->displayCommandDefinition($cmdLength, $command, $subcommand);
         }
         $printer->newline();
-        return;
     }
 
     /**
@@ -116,7 +113,6 @@ abstract class AbstractHelpMenuController extends AbstractController
      * @param  int    $cmdLength
      * @param  string $command
      * @param  string $subcommand
-     * @return void
      */
     protected function displayCommandDefinition($cmdLength, $command, $subcommand = 'default'): void
     {
@@ -143,12 +139,10 @@ abstract class AbstractHelpMenuController extends AbstractController
         $cmd = $printer->spaces(2) . $subcommand;
         $line = sprintf('%s%s', $printer->style(Strings::pad($cmd, $cmdLength), 'info'), $handler::DESCRIPTION);
         $printer->out($line, false);
-        return;
     }
 
     /**
      * Display Intro
-     * @return void
      */
     protected function intro(): void
     {
@@ -157,15 +151,13 @@ abstract class AbstractHelpMenuController extends AbstractController
         $printer->newline();
         $printer->line($this->app->config->app_description);
         $printer->newline();
-        return;
     }
 
     /* =============================================================
-        Supplemental
-    ============================================================= */
+           Supplemental
+       ============================================================= */
     /**
      * Return String Length of Longest Command
-     * @return int
      */
     protected function getLongestCommandLength(): int
     {
@@ -174,7 +166,6 @@ abstract class AbstractHelpMenuController extends AbstractController
 
     /**
      * Return the Longest Command / Subcommand length
-     * @return int
      */
     protected function getLongestCommandSubcommandLength(): int
     {
@@ -198,7 +189,6 @@ abstract class AbstractHelpMenuController extends AbstractController
     /**
      * Return Definition of Command if Definition Exists
      * @param  string $cmd Command
-     * @return string
      */
     public function getCommandDefinition($cmd): string
     {
