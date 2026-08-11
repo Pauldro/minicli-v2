@@ -5,6 +5,11 @@
 	"keywords": ["php", "cli", "php-cli", "minicli"],
 	"license": "MIT",
 	"minimum-stability": "dev",
+	"config": {
+		"platform": {
+			"php": "8.4"
+		}
+	},
 	"authors": [
 		{
 			"name": "Paul Gomez",
