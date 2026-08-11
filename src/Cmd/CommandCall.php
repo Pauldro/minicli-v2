@@ -30,7 +30,7 @@ class CommandCall extends ParentCommandCall {
      * @param  string $param Parameter to get Value from
      * @return bool
      */
-    public function getParamBool($param) : bool
+    public function getParamBool(string $param) : bool
     {
         $value = $this->getParam($param);
         if (empty($value)) {
@@ -45,7 +45,7 @@ class CommandCall extends ParentCommandCall {
      * @param  string $delimiter  Delimiter
      * @return array
      */
-    public function getParamArray($param, $delimiter = ",") : array
+    public function getParamArray(string $param, string $delimiter = ",") : array
     {
         return explode($delimiter, $this->getParam($param));
     }
@@ -55,9 +55,14 @@ class CommandCall extends ParentCommandCall {
      * @param  string $param
      * @return int
      */
-    public function getParamInt($param) : int
+    public function getParamInt(string $param) : int
     {
         return intval($this->getParam($param));
+    }
+
+    public function getParamString(string $param): string
+    {
+        return (string)$this->getParam($param)
     }
 
 /* =============================================================
