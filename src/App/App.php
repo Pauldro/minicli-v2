@@ -34,7 +34,10 @@ class App extends MinicliApp {
     {
         parent::loadDefaultServices();
         $this->addService('log', new Logger());
-        $this->addService('dotenv', new Env());
+        
+        if (array_key_exists('dotenv', $this->config->services) === false) {
+            $this->addService('dotenv', new Env());
+        }
     }
 
     protected function loadServices() : void
