@@ -1,4 +1,6 @@
-<?php namespace Pauldro\Minicli\v2\Output;
+<?php
+namespace Pauldro\Minicli\v2\Output;
+
 // Minicli
 use Minicli\Output\OutputHandler as MinicliOutputHandler;
 
@@ -6,15 +8,16 @@ use Minicli\Output\OutputHandler as MinicliOutputHandler;
  * OutputHandler
  * Handles CLI output
  */
-class OutputHandler extends MinicliOutputHandler {
+class OutputHandler extends MinicliOutputHandler
+{
     /**
      * Return spaces
      * @param  int   $spaces
      * @return string
      */
-    public function spaces($spaces = 0) : string
+    public function spaces($spaces = 0): string
     {
-        return str_pad('', $spaces , ' ');
+        return str_pad('', $spaces, ' ');
     }
 
     /**
@@ -23,9 +26,9 @@ class OutputHandler extends MinicliOutputHandler {
      * @param  bool $alt Whether or not to use the inverted style ("alt")
      * @return void
      */
-    public function line($content, $alt = false) : void
+    public function line($content, $alt = false): void
     {
-        $this->out($content, $alt ? "alt" : "default");
+        $this->out($content, $alt ? 'alt' : 'default');
         $this->newline();
     }
 
@@ -35,7 +38,7 @@ class OutputHandler extends MinicliOutputHandler {
      * @param string $style
      * @return string
      */
-    public function style($content, $style) : string
+    public function style($content, $style): string
     {
         return $this->printerAdapter->out($this->filterOutput($content, $style));
     }

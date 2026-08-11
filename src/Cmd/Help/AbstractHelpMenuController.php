@@ -1,27 +1,29 @@
-<?php namespace Pauldro\Minicli\v2\Cmd\Help;
+<?php
+namespace Pauldro\Minicli\v2\Cmd\Help;
+
 // Pauldro
 use Pauldro\UtilityBelt\Strings;
-
 
 /**
  * AbstractController
  * Handles Displaying the Help Menu
  */
-abstract class AbstractHelpMenuController extends AbstractController  {
-    const COMMAND_DEFINITIONS = [
+abstract class AbstractHelpMenuController extends AbstractController
+{
+    public const COMMAND_DEFINITIONS = [
         // '{{cmd}}' => '{{description}}',
     ];
 
     protected $commandMap = [];
 
-/* =============================================================
-    Init Functions
-============================================================= */
+    /* =============================================================
+        Init Functions
+    ============================================================= */
     /**
      * Initialize App
      * @return bool
      */
-    protected function init() : bool
+    protected function init(): bool
     {
         return $this->initCommandMap();
     }
@@ -30,30 +32,30 @@ abstract class AbstractHelpMenuController extends AbstractController  {
      * Initialize Command Map
      * @return bool
      */
-    protected function initCommandMap() : bool
+    protected function initCommandMap(): bool
     {
         $this->commandMap = $this->getApp()->commandRegistry->getCommandMap();
         return true;
     }
 
-/* =============================================================
-    Minicli Controller Contracts
-============================================================= */
-    public function handle() : void
+    /* =============================================================
+        Minicli Controller Contracts
+    ============================================================= */
+    public function handle(): void
     {
         $this->init();
         $this->intro();
         $this->display();
     }
 
-/* =============================================================
-    Display Printing
-============================================================= */
+    /* =============================================================
+        Display Printing
+    ============================================================= */
     /**
      * Return Default Display
      * @return void
      */
-    protected function display() : void
+    protected function display(): void
     {
         $printer = $this->printer;
         $printer->line($printer->style('Available Commands:', 'info_header'));
@@ -66,10 +68,10 @@ abstract class AbstractHelpMenuController extends AbstractController  {
      * Display Commands and their Subcommands
      * @return void
      */
-    protected function displayCommands() : void
+    protected function displayCommands(): void
     {
-        $cmdLength  = $this->getLongestCommandSubcommandLength() + 4;
-        
+        $cmdLength = $this->getLongestCommandSubcommandLength() + 4;
+
         foreach ($this->commandMap as $command => $subcommands) {
             if ($command == 'test' || $command == 'help') {
                 continue;
@@ -94,9 +96,9 @@ abstract class AbstractHelpMenuController extends AbstractController  {
      * @param  array  $subcommands
      * @return void
      */
-    protected function displayCommand($cmdLength, $command, $subcommands = []) : void
+    protected function displayCommand($cmdLength, $command, $subcommands = []): void
     {
-        $printer    = $this->printer;
+        $printer = $this->printer;
         $this->displayCommandDefinition($cmdLength, $command);
 
         foreach ($subcommands as $subcommand) {
@@ -116,7 +118,7 @@ abstract class AbstractHelpMenuController extends AbstractController  {
      * @param  string $subcommand
      * @return void
      */
-    protected function displayCommandDefinition($cmdLength, $command, $subcommand = 'default') : void
+    protected function displayCommandDefinition($cmdLength, $command, $subcommand = 'default'): void
     {
         $printer = $this->printer;
         $handler = $this->getApp()->commandRegistry->getCallableController($command, $subcommand);
@@ -148,7 +150,8 @@ abstract class AbstractHelpMenuController extends AbstractController  {
      * Display Intro
      * @return void
      */
-    protected function intro() : void {
+    protected function intro(): void
+    {
         $printer = $this->printer;
         $printer->out($this->app->config->app_name, 'italic');
         $printer->newline();
@@ -156,15 +159,15 @@ abstract class AbstractHelpMenuController extends AbstractController  {
         $printer->newline();
         return;
     }
-    
-/* =============================================================
-    Supplemental
-============================================================= */
+
+    /* =============================================================
+        Supplemental
+    ============================================================= */
     /**
      * Return String Length of Longest Command
      * @return int
      */
-    protected function getLongestCommandLength() : int
+    protected function getLongestCommandLength(): int
     {
         return Strings::longestStrlen(array_keys(static::COMMAND_DEFINITIONS));
     }
@@ -173,7 +176,7 @@ abstract class AbstractHelpMenuController extends AbstractController  {
      * Return the Longest Command / Subcommand length
      * @return int
      */
-    protected function getLongestCommandSubcommandLength() : int
+    protected function getLongestCommandSubcommandLength(): int
     {
         $list = [];
 
@@ -197,7 +200,7 @@ abstract class AbstractHelpMenuController extends AbstractController  {
      * @param  string $cmd Command
      * @return string
      */
-    public function getCommandDefinition($cmd) : string
+    public function getCommandDefinition($cmd): string
     {
         if (array_key_exists($cmd, static::COMMAND_DEFINITIONS) === false) {
             return '';

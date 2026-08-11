@@ -1,4 +1,6 @@
-<?php namespace Pauldro\Minicli\v2\Cmd;
+<?php
+namespace Pauldro\Minicli\v2\Cmd;
+
 // PHP
 use BadMethodCallException;
 // Minicli
@@ -19,18 +21,19 @@ use Pauldro\UtilityBelt\SuperGlobals\EnvVarsReader as EnvVars;
  *
  * @property CommandCall $input
  */
-abstract class AbstractController extends CommandController {
-    const DESCRIPTION = '';
-    const OPTIONS = [];
-    const NOTES = [];
-    const OPTIONS_DEFINITIONS = [];
-    const OPTIONS_DEFINITIONS_OVERRIDE = [];
-    const OPTIONS_SKIP = [];
-    const REQUIRED_PARAMS = [];
-    const SENSITIVE_PARAMS = [];
+abstract class AbstractController extends CommandController
+{
+    public const DESCRIPTION = '';
+    public const OPTIONS = [];
+    public const NOTES = [];
+    public const OPTIONS_DEFINITIONS = [];
+    public const OPTIONS_DEFINITIONS_OVERRIDE = [];
+    public const OPTIONS_SKIP = [];
+    public const REQUIRED_PARAMS = [];
+    public const SENSITIVE_PARAMS = [];
     /**  @var array<string,string> */
-    const REQUIRED_ENV_VARS = [];
-    const REQUIRED_PARAM_OR_GROUPS = [
+    public const REQUIRED_ENV_VARS = [];
+    public const REQUIRED_PARAM_OR_GROUPS = [
         // 'credentials' => [
         //     'description' => 'FTP Credentials',
         //     'groups' => [
@@ -49,18 +52,18 @@ abstract class AbstractController extends CommandController {
         $this->timer = new Timer();
     }
 
-/* =============================================================
-    Init Functions
-============================================================= */
-     /**
-     * Called before `run`
-     *
-     * @param  App $app
-     * @param  CommandCall $input
-     * @return void
-     * @throws MissingParametersException
-     */
-    public function boot(MinicliApp $app, MinicliCommandCall $input) : void
+    /* =============================================================
+        Init Functions
+    ============================================================= */
+    /**
+    * Called before `run`
+    *
+    * @param  App $app
+    * @param  CommandCall $input
+    * @return void
+    * @throws MissingParametersException
+    */
+    public function boot(MinicliApp $app, MinicliCommandCall $input): void
     {
         parent::boot($app, $input);
         $this->log = $app->log;
@@ -73,21 +76,21 @@ abstract class AbstractController extends CommandController {
      * @param  CommandCall $input
      * @return void
      */
-    public function bootstrap(MinicliApp $app, MinicliCommandCall $input) : void
+    public function bootstrap(MinicliApp $app, MinicliCommandCall $input): void
     {
-        $this->app     = $app;
-        $this->config  = $app->config;
-        $this->logger  = $app->logger;
-        $this->log     = $app->log;
+        $this->app = $app;
+        $this->config = $app->config;
+        $this->logger = $app->logger;
+        $this->log = $app->log;
         $this->printer = $app->cliprinter;
-        $this->input   = $input;
+        $this->input = $input;
     }
 
     /**
      * The list of parameters required by the command.
      * @return array<int, string>
      */
-    public function required() : array
+    public function required(): array
     {
         return static::REQUIRED_PARAMS;
     }
@@ -96,12 +99,12 @@ abstract class AbstractController extends CommandController {
      * Initialize App
      * @return bool
      */
-    protected function init() : bool
+    protected function init(): bool
     {
         $this->initEnvTimeZone();
         if ($this->initIniDebug() === false) {
             return false;
-        } 
+        }
         if ($this->initRequiredEnvVars() === false) {
             return false;
         }
@@ -115,7 +118,7 @@ abstract class AbstractController extends CommandController {
      * Initialize the Local Time Zone
      * @return bool
      */
-    protected function initEnvTimeZone() : bool
+    protected function initEnvTimeZone(): bool
     {
         $sysTZ = exec('date +%Z');
         $abbr = timezone_name_from_abbr($sysTZ);
@@ -126,18 +129,18 @@ abstract class AbstractController extends CommandController {
      * Initialize php error logging, display of errors
      * @return bool
      */
-    protected function initIniDebug() : bool
+    protected function initIniDebug(): bool
     {
         if ($this->app->config->debug === false && $this->input->hasFlag('--debug') === false) {
             ini_set('display_errors', 'Off');
         }
-        
-        ini_set('log_errors', 'On'); 
-        ini_set('error_log', $this->app->logs_path . "/php-errors.log");
+
+        ini_set('log_errors', 'On');
+        ini_set('error_log', $this->app->logs_path . '/php-errors.log');
         return true;
     }
 
-    protected function initRequiredEnvVars() : bool 
+    protected function initRequiredEnvVars(): bool
     {
         foreach (static::REQUIRED_ENV_VARS as $var => $description) {
             if (EnvVars::exists($var) === false) {
@@ -151,32 +154,32 @@ abstract class AbstractController extends CommandController {
      * Initialize App
      * @return bool
      */
-    protected function initRequiredParams() : bool
+    protected function initRequiredParams(): bool
     {
         foreach (static::REQUIRED_PARAMS as $param) {
             if ($this->hasParam($param) === false) {
                 $description = array_key_exists($param, static::OPTIONS_DEFINITIONS) ? static::OPTIONS_DEFINITIONS[$param] : $param;
-                $use		 = array_key_exists($param, static::OPTIONS) ? static::OPTIONS[$param] : '';
+                $use = array_key_exists($param, static::OPTIONS) ? static::OPTIONS[$param] : '';
                 return $this->error("Missing Parameter: $description ($use)");
             }
         }
         return true;
     }
 
-/* =============================================================
-    Logging Functions
-============================================================= */
+    /* =============================================================
+        Logging Functions
+    ============================================================= */
     /**
      * Log Command sent to App
      * NOTE: Keep public so App can call it
      * @return bool
      */
-    public function logCommand() : bool
+    public function logCommand(): bool
     {
         if (array_key_exists('LOG.COMMANDS', $_ENV) === false || $_ENV['LOG.COMMANDS'] == 'false') {
             return true;
         }
-        $cmd  = Logger::sanitizeCmdForLog($this->input, static::SENSITIVE_PARAMS);
+        $cmd = Logger::sanitizeCmdForLog($this->input, static::SENSITIVE_PARAMS);
         $this->log->command($cmd);
         return true;
     }
@@ -185,12 +188,12 @@ abstract class AbstractController extends CommandController {
      * Log Command sent to App
      * @return bool
      */
-    protected function logError(string $msg) : bool
+    protected function logError(string $msg): bool
     {
         if (array_key_exists('LOG.ERRORS', $_ENV) === false || $_ENV['LOG.ERRORS'] == 'false') {
             return true;
         }
-        $cmd  = Logger::sanitizeCmdForLog($this->input, static::SENSITIVE_PARAMS);
+        $cmd = Logger::sanitizeCmdForLog($this->input, static::SENSITIVE_PARAMS);
         $this->log->error(Logger::createLogString([$cmd, ' -> ', $msg]));
         return true;
     }
@@ -200,22 +203,22 @@ abstract class AbstractController extends CommandController {
      * @param  string $msg
      * @return false
      */
-    protected function error($msg) : bool
+    protected function error($msg): bool
     {
         $this->printer->error($msg);
         $this->logError($msg);
         return false;
     }
 
-/* =============================================================
-    Parameter Functions
-============================================================= */
+    /* =============================================================
+        Parameter Functions
+    ============================================================= */
     /**
      * Return boolean value for parameter
      * @param  string $param Parameter to get Value from
      * @return bool
      */
-    protected function getParamBool($param) : bool
+    protected function getParamBool($param): bool
     {
         return $this->input->getParamBool($param);
     }
@@ -225,7 +228,7 @@ abstract class AbstractController extends CommandController {
      * @param  string $param
      * @return string
      */
-    protected function getParam($param) : string|null
+    protected function getParam($param): string|null
     {
         return $this->input->getParam($param);
     }
@@ -236,24 +239,24 @@ abstract class AbstractController extends CommandController {
      * @param  string $delimiter  Delimiter
      * @return array
      */
-    protected function getParamArray($param, $delimiter = ",") : array
+    protected function getParamArray($param, $delimiter = ','): array
     {
         return $this->input->getParamArray($param, $delimiter);
     }
 
-/* =============================================================
-    Displays
-============================================================= */
+    /* =============================================================
+        Displays
+    ============================================================= */
     /**
      * Display Key Value Data
      * @param  array $data
      * @return void
      */
-    protected function displayDictionary(array $data) : void
+    protected function displayDictionary(array $data): void
     {
         $printer = $this->printer;
         $titleLength = Strings::longestStrlen(array_keys($data));
-        
+
         foreach ($data as $title => $value) {
             $lineData = [
                 $printer->spaces(4),
@@ -264,9 +267,9 @@ abstract class AbstractController extends CommandController {
         }
     }
 
-/* =============================================================
-    Supplemental
-============================================================= */
+    /* =============================================================
+        Supplemental
+    ============================================================= */
     /**
      * @param string $name
      * @param array<int,mixed> $arguments

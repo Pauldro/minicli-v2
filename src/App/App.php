@@ -1,4 +1,6 @@
-<?php namespace Pauldro\Minicli\v2\App;
+<?php
+namespace Pauldro\Minicli\v2\App;
+
 // Base PHP
 use Exception;
 use ReflectionException;
@@ -18,31 +20,31 @@ use Pauldro\Minicli\v2\Output\OutputHandler;
 use Pauldro\Minicli\v2\Logging\Logger;
 use Pauldro\Minicli\v2\Services\Env;
 
-
 /**
  * @property Logger        $log
  * @property OutputHandler $cliprinter
  * @property Env           $dotenv
  */
-class App extends MinicliApp {
+class App extends MinicliApp
+{
     private const DEFAULT_SIGNATURE = './minicli help';
 
-/* =============================================================
-    Inits, Boots, Loads
-============================================================= */
-    protected function loadDefaultServices() : void
+    /* =============================================================
+        Inits, Boots, Loads
+    ============================================================= */
+    protected function loadDefaultServices(): void
     {
         parent::loadDefaultServices();
         $this->addService('log', new Logger());
-        
+
         if (array_key_exists('dotenv', $this->config->services) === false) {
             $this->addService('dotenv', new Env());
         }
     }
 
-    protected function loadServices() : void
+    protected function loadServices(): void
     {
-        try  {
+        try {
             parent::loadServices();
         } catch (Exception $e) {
             $this->log->error($e->getMessage());
@@ -57,30 +59,30 @@ class App extends MinicliApp {
      * @param string $signature
      * @throws BindingResolutionException|ReflectionException
      */
-    public function boot(array $config, string $signature) : void
+    public function boot(array $config, string $signature): void
     {
         $this->loadConfig($config, $signature);
         $this->loadServices();
         $this->addService('commandRegistry', new CommandRegistry($this->parseCommandsPaths()));
         $this->setTheme($this->config->theme);
-        
+
         if ($this->config->has('php_ini') === false) {
             return;
         }
         $this->parseSetInis();
     }
 
-    private function parseCommandsPaths() : array
+    private function parseCommandsPaths(): array
     {
         $commandsPath = $this->config->app_path;
-        if ( ! is_array($commandsPath)) {
+        if (!is_array($commandsPath)) {
             $commandsPath = [$commandsPath];
         }
 
         $commandSources = [];
         foreach ($commandsPath as $path) {
             if (str_starts_with($path, '@')) {
-                $path = str_replace('@', $this->base_path.'/vendor/', $path).'/Command';
+                $path = str_replace('@', $this->base_path . '/vendor/', $path) . '/Command';
             }
             $commandSources[] = $path;
         }
@@ -91,7 +93,7 @@ class App extends MinicliApp {
      * Parse, Set Inis
      * @return void
      */
-    private function parseSetInis() : void
+    private function parseSetInis(): void
     {
         if ($this->config->has('php_ini') === false) {
             return;
@@ -101,7 +103,7 @@ class App extends MinicliApp {
         $files = array_key_exists('files', $conf) ? $conf['files'] : [];
 
         foreach ($files as $file) {
-            $settings = parse_ini_file($dir.$file);
+            $settings = parse_ini_file($dir . $file);
 
             foreach ($settings as $option => $value) {
                 ini_set($option, $value);
@@ -109,10 +111,10 @@ class App extends MinicliApp {
         }
     }
 
-/* =============================================================
-    Setters
-============================================================= */
-    public function setTheme(string $theme) : void
+    /* =============================================================
+        Setters
+    ============================================================= */
+    public function setTheme(string $theme): void
     {
         parent::setTheme($theme);
         $output = new OutputHandler();
@@ -124,15 +126,15 @@ class App extends MinicliApp {
         $this->addService('cliprinter', $output);
     }
 
-/* =============================================================
-    Execution
-============================================================= */
+    /* =============================================================
+        Execution
+    ============================================================= */
     /**
      * @param array<int,string> $argv
      * @return void
      * @throws CommandNotFoundException|Throwable
      */
-    public function runCommand(array $argv = []) : void
+    public function runCommand(array $argv = []): void
     {
         $input = new CommandCall($argv);
 
@@ -162,7 +164,7 @@ class App extends MinicliApp {
             } catch (MissingParametersException $e) {
                 $cmd = $this->log::sanitizeCmdForLog($input, $controller::SENSITIVE_PARAMS);
                 $this->logger->error($e->getMessage(), [$cmd]);
-                
+
                 if ($controller instanceof AbstractController) {
                     $this->log->error($this->log::createLogString([$cmd, '->', $e->getMessage()]));
                 }

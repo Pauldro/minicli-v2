@@ -1,5 +1,6 @@
-<?php namespace Pauldro\Minicli\v2\Logging;
+<?php
+namespace Pauldro\Minicli\v2\Logging;
 
-interface LogFileInterface {
-    
+interface LogFileInterface
+{
 }

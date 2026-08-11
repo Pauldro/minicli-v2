@@ -1,4 +1,6 @@
-<?php namespace Pauldro\Minicli\v2\Util;
+<?php
+namespace Pauldro\Minicli\v2\Util;
+
 //
 use Pauldro\UtilityBelt\Data\Data as DataParent;
 
@@ -9,7 +11,8 @@ use Pauldro\UtilityBelt\Data\Data as DataParent;
  * @property bool  $trackChanges  Track Changes?
  * @property array $changes       Array of previous values keyed by fieldnames
  */
-class Data extends DataParent {
+class Data extends DataParent
+{
     protected $data = [];
     protected $trackChanges = false;
     protected $changes = [];

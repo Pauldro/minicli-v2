@@ -1,4 +1,5 @@
-<?php namespace Pauldro\Minicli\v2\Logging;
+<?php
+namespace Pauldro\Minicli\v2\Logging;
 
 enum LogFileType: string
 {

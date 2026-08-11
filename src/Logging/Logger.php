@@ -1,4 +1,6 @@
-<?php namespace Pauldro\Minicli\v2\Logging;
+<?php
+namespace Pauldro\Minicli\v2\Logging;
+
 // Minicli
 use Minicli\App;
 use Minicli\ServiceInterface;
@@ -9,14 +11,15 @@ use Pauldro\Minicli\v2\Cmd\CommandCall;
  * Logger
  * Service that Logs Messages to files
  */
-class Logger implements ServiceInterface {
+class Logger implements ServiceInterface
+{
     protected const DEFAULT_TIMESTAMP_FORMAT = 'Y-m-d H:i:s';
     protected const LOG_COLUMN_DELIMITER = "\t";
     public const LOG_FILES = [
         'command' => LogFile::Command,
-        'debug'   => LogFile::Debug,
-        'error'   => LogFile::Error,
-        'info'    => LogFile::Info,
+        'debug' => LogFile::Debug,
+        'error' => LogFile::Error,
+        'info' => LogFile::Info,
         'warning' => LogFile::Warning,
     ];
 
@@ -24,7 +27,7 @@ class Logger implements ServiceInterface {
     protected LogFileType $logFileType;
     protected string $timestampFormat;
 
-    public function load(App $app) : void
+    public function load(App $app): void
     {
         $config = $app->config;
 
@@ -33,16 +36,16 @@ class Logger implements ServiceInterface {
         $this->timestampFormat = $config->logging['timestamp_format'] ?? self::DEFAULT_TIMESTAMP_FORMAT;
     }
 
-/* =============================================================
-    LogFilepath Functions
-============================================================= */
+    /* =============================================================
+        LogFilepath Functions
+    ============================================================= */
     /**
      * Return Path to Log File
      * @param  LogFile $file
      * @param  string  $suffix
      * @return string
      */
-    protected function getLogFilePath(LogFileInterface $file, string $suffix = '') : string
+    protected function getLogFilePath(LogFileInterface $file, string $suffix = ''): string
     {
         $filename = $file->value;
 
@@ -56,20 +59,20 @@ class Logger implements ServiceInterface {
         };
     }
 
-    public function logFileExists(LogFileInterface $file) : bool
+    public function logFileExists(LogFileInterface $file): bool
     {
         return file_exists($this->getLogFilePath($file));
     }
 
-/* =============================================================
-    Logging Functions
-============================================================= */
+    /* =============================================================
+        Logging Functions
+    ============================================================= */
     /**
      * @param  string $message
      * @param  array<mixed> $context
      * @return void
      */
-    public function command(string $message, array $context = []) : void
+    public function command(string $message, array $context = []): void
     {
         $this->log($message, $context, LogFile::Command);
     }
@@ -79,7 +82,7 @@ class Logger implements ServiceInterface {
      * @param  array<mixed> $context
      * @return void
      */
-    public function info(string $message, array $context = []) : void
+    public function info(string $message, array $context = []): void
     {
         $this->log($message, $context, LogFile::Info);
     }
@@ -89,7 +92,7 @@ class Logger implements ServiceInterface {
      * @param  array<mixed> $context
      * @return void
      */
-    public function warning(string $message, array $context = []) : void
+    public function warning(string $message, array $context = []): void
     {
         $this->log($message, $context, LogFile::Warning);
     }
@@ -99,7 +102,7 @@ class Logger implements ServiceInterface {
      * @param array<mixed> $context
      * @return void
      */
-    public function error(string $message, array $context = []) : void
+    public function error(string $message, array $context = []): void
     {
         $this->log($message, $context, LogFile::Error);
     }
@@ -109,7 +112,7 @@ class Logger implements ServiceInterface {
      * @param  array<mixed> $context
      * @return void
      */
-    public function debug(string $message, array $context = []) : void
+    public function debug(string $message, array $context = []): void
     {
         $this->log($message, $context, LogFile::Debug);
     }
@@ -120,7 +123,7 @@ class Logger implements ServiceInterface {
      * @param  LogFileInterface|null $file
      * @return void
      */
-    public function log(string $message, array $context = [], ?LogFileInterface $file = null) : void
+    public function log(string $message, array $context = [], ?LogFileInterface $file = null): void
     {
         $delimiter = static::LOG_COLUMN_DELIMITER;
 
@@ -132,7 +135,7 @@ class Logger implements ServiceInterface {
         ), $file);
     }
 
-    public function logSimple(string $message, ?LogFileInterface $file = null) : void
+    public function logSimple(string $message, ?LogFileInterface $file = null): void
     {
         $this->addToLog($message . "\n", $file);
     }
@@ -143,7 +146,7 @@ class Logger implements ServiceInterface {
      * @param  LogFileInterface $file
      * @return void
      */
-    protected function addToLog(string $message, LogFileInterface $file) : void
+    protected function addToLog(string $message, LogFileInterface $file): void
     {
         if (is_dir($this->logsPath) === false) {
             mkdir($this->logsPath, 0775, true);
@@ -162,7 +165,7 @@ class Logger implements ServiceInterface {
      * @param  LogFile $file
      * @return void
      */
-    public function clearLog(LogFileInterface $file) : void
+    public function clearLog(LogFileInterface $file): void
     {
         $logFile = $this->getLogFilePath($file);
 
@@ -177,9 +180,9 @@ class Logger implements ServiceInterface {
      * @param  LogFileInterface $file
      * @return bool
      */
-    public function archiveLogPrevMonth(LogFileInterface $file) : bool
+    public function archiveLogPrevMonth(LogFileInterface $file): bool
     {
-        $date = date('Ym', strtotime("-1 month"));
+        $date = date('Ym', strtotime('-1 month'));
 
         $logFilepath = $this->getLogFilePath($file);
 
@@ -197,15 +200,15 @@ class Logger implements ServiceInterface {
         return true;
     }
 
-/* =============================================================
-    Log Reading Functions
-============================================================= */
+    /* =============================================================
+        Log Reading Functions
+    ============================================================= */
     /**
      * Return the Last Line of a LogFile
      * @param  LogFile $file
      * @return string
      */
-    public function getLastLogLine(LogFileInterface $file) : string
+    public function getLastLogLine(LogFileInterface $file): string
     {
         $logFile = $this->getLogFilePath($file);
 
@@ -221,33 +224,39 @@ class Logger implements ServiceInterface {
      * @param  bool    $adaptive
      * @return string
      */
-    protected function tailLog(string $filepath, $adaptive = true) : string
+    protected function tailLog(string $filepath, $adaptive = true): string
     {
         $lines = 1;
 
         // Open file
-        $f = @fopen($filepath, "rb");
-        if ($f === false) return '';
+        $f = @fopen($filepath, 'rb');
+        if ($f === false) {
+            return '';
+        }
 
         // Sets buffer size, according to the number of lines to retrieve.
         // This gives a performance boost when reading a few lines from the file.
-        if (!$adaptive) $buffer = 4096;
-        else $buffer = ($lines < 2 ? 64 : ($lines < 10 ? 512 : 4096));
+        if (!$adaptive) {
+            $buffer = 4096;
+        } else {
+            $buffer = ($lines < 2 ? 64 : ($lines < 10 ? 512 : 4096));
+        }
 
         // Jump to last character
         fseek($f, -1, SEEK_END);
 
         // Read it and adjust line number if necessary
         // (Otherwise the result would be wrong if file doesn't end with a blank line)
-        if (fread($f, 1) != "\n") $lines -= 1;
-        
+        if (fread($f, 1) != "\n") {
+            $lines -= 1;
+        }
+
         // Start reading
         $output = '';
         $chunk = '';
 
         // While we would like more
         while (ftell($f) > 0 && $lines >= 0) {
-
             // Figure out how far back we should jump
             $seek = min(ftell($f), $buffer);
 
@@ -276,15 +285,15 @@ class Logger implements ServiceInterface {
         return trim($output);
     }
 
-/* =============================================================
-    Log String Functions
-============================================================= */
+    /* =============================================================
+        Log String Functions
+    ============================================================= */
     /**
      * Return array formatted as string for Log delimited by \t
      * @param  array $parts
      * @return string
      */
-    public static function createLogString($parts = []) : string
+    public static function createLogString($parts = []): string
     {
         return implode("\t", $parts);
     }
@@ -293,13 +302,13 @@ class Logger implements ServiceInterface {
      * Sanitize Command for Log Use
      * @return string
      */
-    public static function sanitizeCmdForLog(CommandCall $input, array $sensitiveParams) : string
+    public static function sanitizeCmdForLog(CommandCall $input, array $sensitiveParams): string
     {
         $cmd = implode(' ', $input->getRawArgs());
 
         foreach ($sensitiveParams as $param) {
             $find = "$param=" . $input->getParam($param);
-            $cmd  = str_replace($find, "$param=***", $cmd);
+            $cmd = str_replace($find, "$param=***", $cmd);
         }
         return $cmd;
     }

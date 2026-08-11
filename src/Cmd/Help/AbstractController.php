@@ -1,10 +1,11 @@
-<?php namespace Pauldro\Minicli\v2\Cmd\Help;
+<?php
+namespace Pauldro\Minicli\v2\Cmd\Help;
+
 // PHP Core
 use ReflectionClass;
 // Pauldro
 use Pauldro\Minicli\v2\Cmd\AbstractController as ParentController;
 use Pauldro\UtilityBelt\Strings;
-
 
 /**
  * AbstractController
@@ -12,24 +13,25 @@ use Pauldro\UtilityBelt\Strings;
  *
  * @property array $commandMap Array of Map Commands
  */
-abstract class AbstractController extends ParentController {
-    const COMMAND = '';
-    const DESCRIPTION = '';
-    const COMMAND_DEFINITIONS = [];
-    const OPTIONS = [];
-    const OPTIONS_DEFINITIONS = [];
-    const OPTIONS_DEFINITIONS_OVERRIDE = [];
-    const SUBCOMMANDS = [];
-    const NOTES = [];
-    const INTRO_DELIMITER = '/////////////////////////////////////////////////////////';
-    const REQUIRED_PARAMS = [];
+abstract class AbstractController extends ParentController
+{
+    public const COMMAND = '';
+    public const DESCRIPTION = '';
+    public const COMMAND_DEFINITIONS = [];
+    public const OPTIONS = [];
+    public const OPTIONS_DEFINITIONS = [];
+    public const OPTIONS_DEFINITIONS_OVERRIDE = [];
+    public const SUBCOMMANDS = [];
+    public const NOTES = [];
+    public const INTRO_DELIMITER = '/////////////////////////////////////////////////////////';
+    public const REQUIRED_PARAMS = [];
     /**  @var array<string,string>*/
-    const REQUIRED_ENV_VARS = [];
+    public const REQUIRED_ENV_VARS = [];
 
-/* =============================================================
-    Minicli Controller Contracts
-============================================================= */
-    public function handle() : void
+    /* =============================================================
+        Minicli Controller Contracts
+    ============================================================= */
+    public function handle(): void
     {
         $this->display();
     }
@@ -39,19 +41,19 @@ abstract class AbstractController extends ParentController {
      *
      * @return array<int, string>
      */
-    public function required() : array
+    public function required(): array
     {
         return [];
     }
 
-/* =============================================================
-    Display Printing
-============================================================= */
+    /* =============================================================
+        Display Printing
+    ============================================================= */
     /**
      * Display Command
      * @return void
      */
-    protected function display() : void
+    protected function display(): void
     {
         $this->displayUsage();
         $this->displayDescription();
@@ -70,7 +72,7 @@ abstract class AbstractController extends ParentController {
      * Display Command Usage
      * @return void
      */
-    protected function displayUsage() : void
+    protected function displayUsage(): void
     {
         $printer = $this->printer;
         $printer->line($printer->style('Usage:', 'info_header'));
@@ -84,7 +86,7 @@ abstract class AbstractController extends ParentController {
      * Display Command Options
      * @return void
      */
-    protected function displayOptions() : void
+    protected function displayOptions(): void
     {
         $printer = $this->printer;
         $optLength = $this->getLongestOptExampleLength() + 4;
@@ -99,7 +101,7 @@ abstract class AbstractController extends ParentController {
         return;
     }
 
-    protected function displayRequiredEnvVars() : void
+    protected function displayRequiredEnvVars(): void
     {
         if (empty(static::REQUIRED_ENV_VARS)) {
             return;
@@ -120,7 +122,7 @@ abstract class AbstractController extends ParentController {
      * Display Required Command Parameters
      * @return void
      */
-    protected function displayRequiredParams() : void
+    protected function displayRequiredParams(): void
     {
         if (empty(static::REQUIRED_PARAMS)) {
             return;
@@ -134,7 +136,7 @@ abstract class AbstractController extends ParentController {
             if (array_key_exists($option, static::OPTIONS) === false) {
                 continue;
             }
-            
+
             $example = Strings::pad($option, $optLength);
             $description = $this->getOptDefinition($option);
             $printer->line(sprintf('%s%s%s', $printer->spaces(2), $example, $description));
@@ -146,7 +148,7 @@ abstract class AbstractController extends ParentController {
      * Display Params that are required if others are not present
      * @return void
      */
-    protected function displayRequiredParamOrGroups() : void
+    protected function displayRequiredParamOrGroups(): void
     {
         if (empty(static::REQUIRED_PARAM_OR_GROUPS)) {
             return;
@@ -160,13 +162,13 @@ abstract class AbstractController extends ParentController {
             $i = 1;
             $indent = $printer->spaces(4);
 
-            foreach ($rule['groups'] as $groupid  => $group) {
+            foreach ($rule['groups'] as $groupid => $group) {
                 foreach ($group as $option) {
                     $example = static::OPTIONS[$option];
                     $printer->line(sprintf('%s%s', $printer->spaces(4), $example));
                 }
                 if ($i < sizeof($rule['groups'])) {
-                    $printer->info($indent . "*** OR ***");
+                    $printer->info($indent . '*** OR ***');
                     $printer->newline();
                 }
                 $i++;
@@ -179,7 +181,7 @@ abstract class AbstractController extends ParentController {
      * Display Command Description
      * @return void
      */
-    protected function displayDescription() : void
+    protected function displayDescription(): void
     {
         $printer = $this->printer;
         $printer->line($printer->style('Description:', 'info_header'));
@@ -191,7 +193,7 @@ abstract class AbstractController extends ParentController {
      * Display Notes
      * @return void
      */
-    protected function displayNotes() : void
+    protected function displayNotes(): void
     {
         $printer = $this->printer;
 
@@ -209,7 +211,7 @@ abstract class AbstractController extends ParentController {
      * Display Subcommands
      * @return void
      */
-    protected function displaySubcommands() : void
+    protected function displaySubcommands(): void
     {
         $printer = $this->printer;
 
@@ -217,7 +219,6 @@ abstract class AbstractController extends ParentController {
             return;
         }
         $printer->line($printer->style('See Also:', 'info_header'));
-        
 
         foreach (static::SUBCOMMANDS as $cmd) {
             $printer->line(sprintf('%s%s%s%s%s', $printer->spaces(2), 'help ', static::COMMAND, ' ', $cmd));
@@ -229,7 +230,7 @@ abstract class AbstractController extends ParentController {
      * Display Subcommand
      * @return void
      */
-    protected function displaySubcommand() : void
+    protected function displaySubcommand(): void
     {
         if (in_array($this->input->lastArg(), static::SUBCOMMANDS) === false) {
             return;
@@ -243,23 +244,23 @@ abstract class AbstractController extends ParentController {
         return;
     }
 
-/* =============================================================
-    Supplemental
-============================================================= */
+    /* =============================================================
+        Supplemental
+    ============================================================= */
     /**
      * Return String Length of Longest Command
      * @return int
      */
-    protected function getLongestOptLength() : int
+    protected function getLongestOptLength(): int
     {
-        return Strings::longestStrlen(array_keys(static::OPTIONS_DEFINITIONS)); 
+        return Strings::longestStrlen(array_keys(static::OPTIONS_DEFINITIONS));
     }
 
     /**
      * Return String Length of Longest Command
      * @return int
      */
-    protected function getLongestOptExampleLength() : int
+    protected function getLongestOptExampleLength(): int
     {
         return Strings::longestStrlen(array_values(static::OPTIONS));
     }
@@ -269,7 +270,7 @@ abstract class AbstractController extends ParentController {
      * @param  string $opt Option, Argument (param|flag)
      * @return string
      */
-    protected function getOptDefinition($opt) : string
+    protected function getOptDefinition($opt): string
     {
         if (array_key_exists($opt, static::OPTIONS_DEFINITIONS_OVERRIDE)) {
             return static::OPTIONS_DEFINITIONS_OVERRIDE[$opt];
@@ -280,7 +281,8 @@ abstract class AbstractController extends ParentController {
         return static::OPTIONS_DEFINITIONS[$opt];
     }
 
-    protected function getSubcommandController(string $command, string $subcommand) : ParentController|false {
+    protected function getSubcommandController(string $command, string $subcommand): ParentController|false
+    {
         $reflector = new ReflectionClass(get_class($this));
         $ns = $reflector->getNamespaceName() . '\\' . ucfirst($command) . '\\';
         $class = $ns . ucfirst($subcommand) . 'Controller';

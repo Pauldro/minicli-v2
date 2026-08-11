@@ -1,11 +1,14 @@
-<?php namespace Pauldro\Minicli\v2\Cmd;
+<?php
+namespace Pauldro\Minicli\v2\Cmd;
+
 // Minicli
 use Minicli\Command\CommandRegistry as ParentCommandRegistry;
 use Minicli\ControllerInterface;
 // Pauldro
 use Pauldro\UtilityBelt\Strings;
 
-class CommandRegistry extends ParentCommandRegistry {
+class CommandRegistry extends ParentCommandRegistry
+{
     /**
      * get callable controller
      *
@@ -13,10 +16,10 @@ class CommandRegistry extends ParentCommandRegistry {
      * @param string $subcommand
      * @return ControllerInterface|null
      */
-    public function getCallableController(string $command, string $subcommand = "default"): ?ControllerInterface
+    public function getCallableController(string $command, string $subcommand = 'default'): ?ControllerInterface
     {
         $command = strtolower(Strings::camelCase($command));
-		$subcommand = strtolower(Strings::camelCase($subcommand));
+        $subcommand = strtolower(Strings::camelCase($subcommand));
         $namespace = $this->getNamespace($command);
 
         return $namespace?->getController($subcommand);

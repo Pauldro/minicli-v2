@@ -1,4 +1,5 @@
-<?php namespace Pauldro\Minicli\v2\Util\Files;
+<?php
+namespace Pauldro\Minicli\v2\Util\Files;
 
 use Pauldro\UtilityBelt\Files\FileWriter as FileWriterParent;
 
@@ -8,12 +9,13 @@ use Pauldro\UtilityBelt\Files\FileWriter as FileWriterParent;
  * @property string $errorMsg
  * @property string $lastWrittenFile
  */
-class FileWriter extends FileWriterParent {
+class FileWriter extends FileWriterParent
+{
     private static $instance;
     public $errorMsg;
     public $lastWrittenFile;
 
-    public static function instance() : FileWriter
+    public static function instance(): FileWriter
     {
         if (empty(self::$instance)) {
             self::$instance = new static();

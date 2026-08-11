@@ -1,4 +1,6 @@
-<?php namespace Pauldro\Minicli\v2\Services;
+<?php
+namespace Pauldro\Minicli\v2\Services;
+
 // Minicli
 use Minicli\App;
 use Minicli\ServiceInterface;
@@ -7,11 +9,12 @@ use Minicli\ServiceInterface;
  * VendorfilepathParser
  * Utility for getting path to vendor directory
  */
-class VendorFilepathParser implements ServiceInterface {
+class VendorFilepathParser implements ServiceInterface
+{
     private static $instance;
     private $env_dir = '';
 
-    public static function instance() : VendorFilepathParser
+    public static function instance(): VendorFilepathParser
     {
         return self::$instance;
     }
@@ -26,9 +29,10 @@ class VendorFilepathParser implements ServiceInterface {
      * Parse vendor path
      * @param string $path
      */
-    public function parse(string $path) {
+    public function parse(string $path)
+    {
         if (str_starts_with($path, '@')) {
-            $path = str_replace('@', $this->env_dir.'/vendor/', $path);
+            $path = str_replace('@', $this->env_dir . '/vendor/', $path);
         }
         return $path;
     }

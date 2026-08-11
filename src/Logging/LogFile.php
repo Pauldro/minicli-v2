@@ -1,6 +1,7 @@
-<?php namespace Pauldro\Minicli\v2\Logging;
+<?php
+namespace Pauldro\Minicli\v2\Logging;
 
-enum LogFile : string implements LogFileInterface 
+enum LogFile: string implements LogFileInterface
 {
     case Command = 'command';
     case Debug = 'debug';

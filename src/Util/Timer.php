@@ -1,19 +1,22 @@
-<?php namespace Pauldro\Minicli\v2\Util;
+<?php
+namespace Pauldro\Minicli\v2\Util;
 
-class Timer {
+class Timer
+{
     public $startTime = 0;
     public $endTime = 0;
 
-
-    public function start() {
+    public function start()
+    {
         $this->startTime = time();
     }
 
-    public function end() {
+    public function end()
+    {
         $this->endTime = time();
     }
 
-    public function getDuration() : string
+    public function getDuration(): string
     {
         $duration = abs($this->endTime - $this->startTime);
 
@@ -34,8 +37,8 @@ class Timer {
             $parts[] = $value . $unit;
         }
         if (empty($parts)) {
-            return "0s";
+            return '0s';
         }
-        return implode(" ", $parts);
+        return implode(' ', $parts);
     }
 }
