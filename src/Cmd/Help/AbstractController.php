@@ -104,11 +104,11 @@ abstract class AbstractController extends ParentController
         }
 
         $printer = $this->printer;
-        $optLength = Strings::longestStrlen(array_keys(static::REQUIRED_ENV_VARS));
-        $printer->info('Required .env variable:');
+        $optLength = Strings::longestStrlen(array_keys(static::REQUIRED_ENV_VARS)) + 4;
+        $printer->line($printer->style('Required .env variables:', 'info_header'));
 
         foreach (static::REQUIRED_ENV_VARS as $var => $description) {
-            $example = Strings::pad($var, $optLength);
+            $example = $printer->style(Strings::pad($var, $optLength), 'bold');
             $printer->line(sprintf('%s%s%s', $printer->spaces(2), $example, $description));
         }
     }
