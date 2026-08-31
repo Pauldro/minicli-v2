@@ -38,12 +38,12 @@ class Logger implements ServiceInterface
 
     /* =============================================================
            LogFilepath Functions
-       ============================================================= */
+    ============================================================= */
     /**
      * Return Path to Log File
      * @param  LogFile $file
      */
-    protected function getLogFilePath(LogFileInterface $file, string $suffix = ''): string
+    public function getLogFilePath(LogFileInterface $file, string $suffix = ''): string
     {
         $filename = $file->value;
 
