@@ -8,7 +8,6 @@ use Minicli\ServiceInterface;
 use Pauldro\Minicli\v2\Cmd\CommandCall;
 
 /**
- * Logger
  * Service that Logs Messages to files
  */
 class Logger implements ServiceInterface
@@ -37,11 +36,11 @@ class Logger implements ServiceInterface
     }
 
     /* =============================================================
-           LogFilepath Functions
+        LogFilepath Functions
     ============================================================= */
     /**
      * Return Path to Log File
-     * @param  LogFile $file
+     * @param LogFileInterface|LogFile $file
      */
     public function getLogFilePath(LogFileInterface $file, string $suffix = ''): string
     {
@@ -63,8 +62,8 @@ class Logger implements ServiceInterface
     }
 
     /* =============================================================
-           Logging Functions
-       ============================================================= */
+        Logging Functions
+    ============================================================= */
     /**
      * @param  array<mixed> $context
      */
@@ -181,10 +180,10 @@ class Logger implements ServiceInterface
 
     /* =============================================================
            Log Reading Functions
-       ============================================================= */
+    ============================================================= */
     /**
      * Return the Last Line of a LogFile
-     * @param  LogFile $file
+     * @param  LogFileInterface|LogFile $file
      */
     public function getLastLogLine(LogFileInterface $file): string
     {
@@ -262,8 +261,8 @@ class Logger implements ServiceInterface
     }
 
     /* =============================================================
-           Log String Functions
-       ============================================================= */
+        Log String Functions
+    ============================================================= */
     /**
      * Return array formatted as string for Log delimited by \t
      * @param  array $parts
