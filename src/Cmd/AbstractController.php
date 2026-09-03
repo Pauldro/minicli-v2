@@ -101,6 +101,8 @@ abstract class AbstractController extends CommandController
     protected function init(): bool
     {
         $this->initEnvTimeZone();
+        $this->initDebug();
+        
         if ($this->initIniDebug() === false) {
             return false;
         }
@@ -118,6 +120,18 @@ abstract class AbstractController extends CommandController
         $sysTZ = exec('date +%Z');
         $abbr = timezone_name_from_abbr($sysTZ);
         return date_default_timezone_set($abbr);
+    }
+
+    protected function initDebug(): bool
+    {
+        if ($this->input->hasFlag('--debug')) {
+            if (EnvVars::getBool('APP.DEBUG') === false) {
+                putenv('APP.DEBUG=true');
+                $_ENV['APP.DEBUG'] = 'true';
+            }
+            $this->config->debug = true;
+        }
+        return true;
     }
 
     /**

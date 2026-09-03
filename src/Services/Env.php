@@ -38,6 +38,10 @@ class Env implements ServiceInterface
         $this->filepath = $this->dir . '.env';
         $this->env = $dotenv;
         $this->env->required(static::REQUIRED);
+
+        if (EnvVars::getBool('APP.DEBUG')) {
+            $app->config->debug = true;
+        }
     }
 
     /**
