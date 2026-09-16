@@ -2,10 +2,12 @@
 namespace Pauldro\Minicli\v2\Cmd\Help;
 
 // Pauldro
+use Pauldro\Minicli\v2\Cmd\AbstractController as AbstractCmdController;
+use Pauldro\Minicli\v2\Cmd\Help\AbstractController as AbstractCmdHelpController;
 use Pauldro\UtilityBelt\Strings;
 
+
 /**
- * AbstractController
  * Handles Displaying the Help Menu
  */
 abstract class AbstractHelpMenuController extends AbstractController
@@ -85,7 +87,7 @@ abstract class AbstractHelpMenuController extends AbstractController
         if (array_key_exists('help', $this->commandMap) === false) {
             return;
         }
-        $this->displayCommand($cmdLength, 'help', $this->commandMap['help']);
+        $this->displayHelpCommand($cmdLength);
     }
 
     /**
@@ -117,6 +119,7 @@ abstract class AbstractHelpMenuController extends AbstractController
     protected function displayCommandDefinition($cmdLength, $command, $subcommand = 'default'): void
     {
         $printer = $this->printer;
+        /** @var AbstractCmdController */
         $handler = $this->getApp()->commandRegistry->getCallableController($command, $subcommand);
 
         if (empty($handler)) {
@@ -132,11 +135,11 @@ abstract class AbstractHelpMenuController extends AbstractController
         $printer->newline();
 
         if ($subcommand == 'default') {
-            $line = sprintf('%s%s', $printer->style(Strings::pad($command, $cmdLength), 'info'), $handler::DESCRIPTION);
+            $line = sprintf('%s%s', $printer->style(Strings::pad($handler->getCmdCallName(), $cmdLength), 'info'), $handler::DESCRIPTION);
             $printer->out($line, false);
             return;
         }
-        $cmd = $printer->spaces(2) . $subcommand;
+        $cmd = $printer->spaces(2) . $handler->getCmdCallName();
         $line = sprintf('%s%s', $printer->style(Strings::pad($cmd, $cmdLength), 'info'), $handler::DESCRIPTION);
         $printer->out($line, false);
     }
@@ -151,6 +154,50 @@ abstract class AbstractHelpMenuController extends AbstractController
         $printer->newline();
         $printer->line($this->app->config->app_description);
         $printer->newline();
+    }
+
+    /**
+     * Display Help Command Defintion along with subcommands
+     * @param  int    $cmdLength
+     * @return void
+     */
+    protected function displayHelpCommand(int $cmdLength) : void
+    {
+        $printer    = $this->printer;
+        $command = 'help';
+        $subcommands = $this->commandMap['help'];
+
+        $this->displayCommandDefinition($cmdLength, $command);
+        
+
+        foreach ($subcommands as $subcommand) {
+            if ($subcommand == 'default') {
+                continue;
+            }
+            $this->displayCommandDefinition($cmdLength, $command, $subcommand);
+            $printer->newline();
+            
+            /** @var AbstractCmdHelpController */
+            $handler = $this->app->commandRegistry->getCallableController($command, $subcommand);
+
+            if (empty($handler::SUBCOMMANDS)) {
+                continue;
+            }
+
+            foreach ($handler::SUBCOMMANDS as $subcmd) {
+                /** @var AbstractCmdHelpController */
+                $helpHandler = $this->app->commandRegistry->getCallableController("$command $subcommand", $subcmd);
+                
+                if (empty($helpHandler)) {
+                    continue;
+                }
+                $cmd = $printer->spaces(4) . $subcmd;
+                $line = sprintf('%s%s', $printer->style(Strings::pad($cmd, $cmdLength), 'info'), $helpHandler::DESCRIPTION);
+                $printer->out($line, false);
+                $printer->newline();
+            }
+        }
+        return;
     }
 
     /* =============================================================
