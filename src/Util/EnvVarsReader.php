@@ -1,8 +1,4 @@
-<?php
-
-declare(strict_types=1);
-
-namespace Pauldro\Minicli\v2\Util;
+<?php namespace Pauldro\Minicli\v2\Util;
 
 // Pauldro
 use Pauldro\UtilityBelt\SuperGlobals\EnvVarsReader as EnvReaderParent;

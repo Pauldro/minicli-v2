@@ -1,8 +1,4 @@
-<?php
-
-declare(strict_types=1);
-
-namespace Pauldro\Minicli\v2\Util\Files\Directory;
+<?php namespace Pauldro\Minicli\v2\Util\Files\Directory;
 
 // Pauldro
 use Pauldro\UtilityBelt\Files\Directory\FileFetcher as FileFetcherParent;
