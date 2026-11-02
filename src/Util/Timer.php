@@ -1,7 +1,6 @@
 <?php
 
 declare(strict_types=1);
-
 namespace Pauldro\Minicli\v2\Util;
 
 class Timer
@@ -24,12 +23,12 @@ class Timer
         $duration = abs($this->endTime - $this->startTime);
 
         $units = [
-            'y' => $duration / 31556926 % 12,
-            'w' => $duration / 604800 % 52,
-            'd' => $duration / 86400 % 7,
-            'h' => $duration / 3600 % 24,
-            'm' => $duration / 60 % 60,
-            's' => $duration % 60
+            'y' => intval($duration / 31556926) % 12,
+            'w' => intval($duration / 604800) % 52,
+            'd' => intval($duration / 86400) % 7,
+            'h' => intval($duration / 3600) % 24,
+            'm' => intval($duration / 60) % 60,
+            's' => intval($duration) % 60
         ];
         $parts = [];
 
