@@ -1,5 +1,4 @@
-<?php
-namespace Pauldro\Minicli\v2\Cmd;
+<?php namespace Pauldro\Minicli\v2\Cmd;
 
 // PHP
 use BadMethodCallException;
@@ -102,7 +101,7 @@ abstract class AbstractController extends CommandController
     {
         $this->initEnvTimeZone();
         $this->initDebug();
-        
+
         if ($this->initIniDebug() === false) {
             return false;
         }
@@ -269,7 +268,7 @@ abstract class AbstractController extends CommandController
         }
     }
 
-    public function getCmdCallName() : string
+    public function getCmdCallName(): string
     {
         $reflector = CommandReflectionClassFactory::fetch($this);
         $controllerName = $reflector->getControllerName();
@@ -287,7 +286,7 @@ abstract class AbstractController extends CommandController
             foreach (explode('\\', $reflector->getShortNamespaceName(2)) as $segment) {
                 $ns[] = Strings::hyphenCase($segment);
             }
-            return implode(" ", $ns);
+            return implode(' ', $ns);
         }
 
         return Strings::hyphenCase($reflector->getShortNamespaceName(1));
