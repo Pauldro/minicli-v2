@@ -1,11 +1,10 @@
-<?php
-namespace Pauldro\Minicli\v2\Cmd\Help;
+<?php namespace Pauldro\Minicli\v2\Cmd\Help;
 
 // Pauldro
 use Pauldro\Minicli\v2\Cmd\AbstractController as AbstractCmdController;
+use Pauldro\Minicli\v2\Cmd\CommandReflectionClass;
 use Pauldro\Minicli\v2\Cmd\Help\AbstractController as AbstractCmdHelpController;
 use Pauldro\UtilityBelt\Strings;
-
 
 /**
  * Handles Displaying the Help Menu
@@ -15,18 +14,22 @@ abstract class AbstractHelpMenuController extends AbstractController
     public const COMMAND_DEFINITIONS = [
         // '{{cmd}}' => '{{description}}',
     ];
+    public const MENU_DESCRIPTION = '';
 
     protected $commandMap = [];
 
+    protected CommandReflectionClass $reflector;
+
     /* =============================================================
-           Init Functions
-       ============================================================= */
+        Init Functions
+    ============================================================= */
     /**
      * Initialize App
      */
     #[\Override]
     protected function init(): bool
     {
+        $this->initReflectionClass();
         return $this->initCommandMap();
     }
 
@@ -36,6 +39,12 @@ abstract class AbstractHelpMenuController extends AbstractController
     protected function initCommandMap(): bool
     {
         $this->commandMap = $this->getApp()->commandRegistry->getCommandMap();
+        return true;
+    }
+
+    protected function initReflectionClass(): bool
+    {
+        $this->reflector = new CommandReflectionClass($this);
         return true;
     }
 
@@ -51,8 +60,8 @@ abstract class AbstractHelpMenuController extends AbstractController
     }
 
     /* =============================================================
-           Display Printing
-       ============================================================= */
+        Display Printing
+    ============================================================= */
     /**
      * Return Default Display
      */
@@ -133,13 +142,19 @@ abstract class AbstractHelpMenuController extends AbstractController
         }
 
         $printer->newline();
+        $scriptCall = Strings::hyphenCase($this->reflector->getDirectNamespaceName());
+        $cmdCallName = $handler->getCmdCallName();
+
+        if (str_starts_with($cmdCallName, $scriptCall)) {
+            $cmdCallName = substr($cmdCallName, strlen("$scriptCall "));
+        }
 
         if ($subcommand == 'default') {
-            $line = sprintf('%s%s', $printer->style(Strings::pad($handler->getCmdCallName(), $cmdLength), 'info'), $handler::DESCRIPTION);
+            $line = sprintf('%s%s', $printer->style(Strings::pad($cmdCallName, $cmdLength), 'info'), $handler::DESCRIPTION);
             $printer->out($line, false);
             return;
         }
-        $cmd = $printer->spaces(2) . $handler->getCmdCallName();
+        $cmd = $printer->spaces(2) . $cmdCallName;
         $line = sprintf('%s%s', $printer->style(Strings::pad($cmd, $cmdLength), 'info'), $handler::DESCRIPTION);
         $printer->out($line, false);
     }
@@ -150,9 +165,18 @@ abstract class AbstractHelpMenuController extends AbstractController
     protected function intro(): void
     {
         $printer = $this->printer;
-        $printer->out($this->app->config->app_name, 'italic');
+        $scriptCall = Strings::hyphenCase($this->reflector->getDirectNamespaceName());
+
+        $appScript = $this->app->config->app_name;
+        $description = $this->app->config->app_description;
+
+        if ($scriptCall != 'cmd') {
+            $appScript .= " $scriptCall";
+            $description = static::MENU_DESCRIPTION ? static::MENU_DESCRIPTION : $description;
+        }
+        $printer->out($appScript, 'italic');
         $printer->newline();
-        $printer->line($this->app->config->app_description);
+        $printer->line($description);
         $printer->newline();
     }
 
@@ -161,14 +185,13 @@ abstract class AbstractHelpMenuController extends AbstractController
      * @param  int    $cmdLength
      * @return void
      */
-    protected function displayHelpCommand(int $cmdLength) : void
+    protected function displayHelpCommand(int $cmdLength): void
     {
         $printer    = $this->printer;
         $command = 'help';
         $subcommands = $this->commandMap['help'];
 
         $this->displayCommandDefinition($cmdLength, $command);
-        
 
         foreach ($subcommands as $subcommand) {
             if ($subcommand == 'default') {
@@ -176,7 +199,7 @@ abstract class AbstractHelpMenuController extends AbstractController
             }
             $this->displayCommandDefinition($cmdLength, $command, $subcommand);
             $printer->newline();
-            
+
             /** @var AbstractCmdHelpController */
             $handler = $this->app->commandRegistry->getCallableController($command, $subcommand);
 
@@ -187,7 +210,7 @@ abstract class AbstractHelpMenuController extends AbstractController
             foreach ($handler::SUBCOMMANDS as $subcmd) {
                 /** @var AbstractCmdHelpController */
                 $helpHandler = $this->app->commandRegistry->getCallableController("$command $subcommand", $subcmd);
-                
+
                 if (empty($helpHandler)) {
                     continue;
                 }
@@ -201,8 +224,8 @@ abstract class AbstractHelpMenuController extends AbstractController
     }
 
     /* =============================================================
-           Supplemental
-       ============================================================= */
+        Supplemental
+    ============================================================= */
     /**
      * Return String Length of Longest Command
      */
