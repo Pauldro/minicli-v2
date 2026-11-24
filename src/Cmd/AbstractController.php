@@ -138,6 +138,8 @@ abstract class AbstractController extends CommandController
      */
     protected function initIniDebug(): bool
     {
+        ini_set('display_errors', 'On');
+        
         if ($this->app->config->debug === false && $this->input->hasFlag('--debug') === false) {
             ini_set('display_errors', 'Off');
         }
